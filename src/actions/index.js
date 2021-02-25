@@ -5,6 +5,6 @@ export function addUser(payload) {
   return { type: ADD_USER, payload };
 }
 
-export function changeWord(payload){
-  return {type: 'change_word', payload}
+export function addWord(payload){
+  return {type: 'add_word', payload}
 }

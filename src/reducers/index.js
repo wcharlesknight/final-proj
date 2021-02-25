@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit'
 
 const initialState = {
   users: [],
-  gameWord: ''
+  gameWord: []
 };
 
 
@@ -15,8 +15,11 @@ function rootReducer(state = initialState, action) {
       users: state.users.concat(action.payload)
     });
   }
-  else if (action.type === 'change_word'){
-    state.gameWord = action.payload
+  else if (action.type === 'add_word'){
+    return {
+      ...state,
+      gameWord: state.gameWord.concat(action.payload)
+    }
   }
   return state;
 }
