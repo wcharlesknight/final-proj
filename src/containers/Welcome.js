@@ -1,29 +1,25 @@
 import React, {Component} from 'react'
 import {Container, Button} from "react-bootstrap"
+import {withRouter} from 'react-router-dom'
 
 
 
-export default class Welcome extends Component {  
+class Welcome extends Component {  
     
-    // when game is over we will create score and game 
-    
-    // newGame = () => {
-    //     fetch('http://localhost:3000/games', {
-    //         method: 'POST', 
-    //         headers: {
-    //             'Content-Type':  'application/json'
-    //         }
-    //     })
-    // }
+   direct = (e) => {
+       this.props.history.push(e.target.id)
+   }
    
-
+//    onClick={(e) => this.direct(e)}
     render() {
         return(
-           <Container > 
-               <Button> 
-                   New Game
-                </Button> 
+           <Container className='login' > 
+            {/* <a href="#!" className="button" data-micron="bounce">Bounce</a> */}
+               <Button className='button' data-micron='bounce' id='/game' onClick={(e) => this.direct(e)}> Play </Button>
+               <Button> Your High Scores </Button>
+               <Button> Leaderboards </Button>
             </Container>
         )
       }
     }
+export default withRouter(Welcome)

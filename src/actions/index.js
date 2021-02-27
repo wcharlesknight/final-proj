@@ -8,3 +8,7 @@ export function addUser(payload) {
 export function addWord(payload){
   return {type: 'add_word', payload}
 }
+
+export function addGame(payload){
+  return {type: 'add_game', payload }
+}

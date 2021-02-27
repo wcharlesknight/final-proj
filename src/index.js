@@ -1,22 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {BrowserRouter, Route} from 'react-router-dom'
 import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
-import Welcome from './containers/Welcome'
-import GameContainer from './containers/GameContainer'
-import MainContainer from './containers/MainContainer'
+
+import App from './App'
 import store from './store/index'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 ReactDOM.render(
   <Provider store={store} > 
-    <BrowserRouter >
-      <Route exact path='/home' component={MainContainer} /> 
-      <Route path='/game' component={GameContainer} /> 
-      <Route path='/welcome' component={Welcome} /> 
-    </BrowserRouter>
+    <App/>
   </Provider>,
   document.getElementById('root')
 );

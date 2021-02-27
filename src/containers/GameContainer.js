@@ -1,16 +1,24 @@
 import React, {Component} from 'react'
-import {Form, Button, Row, Container,  FormControl} from 'react-bootstrap'
+import {Form, Button, Row, Container, Col} from 'react-bootstrap'
 
 import { connect } from "react-redux";
-import { addWord } from '../actions/index';
+import { addWord, addGame } from '../actions/index';
 import store from "../store/index";
 
    
 function mapDispatchToProps(dispatch) {
     return {
-      addWord: word => dispatch(addWord(word))
+      addWord: word => dispatch(addWord(word)),
+      addGame: game => dispatch(addGame(game))
     };
-  }  
+  }
+
+function mapStateToProps(state) {
+    return  state
+}
+let token = localStorage.token;
+let config = {method: 'GET', headers: {'Content-Type': 'application/json', 
+Authorization: `Bearer ${token}`}  } 
 
 class Game extends Component {  
 
@@ -20,29 +28,94 @@ class Game extends Component {
         score: 0,
         timer: 7,
         usedWords: [],
-        error: ''
+        error: '',
+        bonusPoints: 0,
+        bonusWord: 1,
+        bonusOn: 1,
+        round: 0
+    
+    }
 
+    useBonus = (e) => {
+        if (e.keyCode  ===  49 ){
+            if (this.state.bonusPoints - 4 >= 0) {
+              this.setState(prevState => {
+                 return {bonusPoints: prevState.bonusPoints - 4,
+                          bonusOn: 2}
+                })} 
+            else 
+                 this.errorMessages('Not enough bonus points')
+        }
+        if (e.keyCode  ===  50 ){
+            if (this.state.bonusPoints - 8 >= 0) {
+                this.setState(prevState => {
+                   return {bonusPoints: prevState.bonusPoints - 8,
+                            bonusOn: 3}
+                  })} 
+              else 
+                   this.errorMessages('Not enough bonus points')
+        }
+        if (e.keyCode  ===  51 ){
+            this.errorMessages('3 was pressed')
+        }
+        if (e.keyCode  ===  52 ){
+            this.errorMessages('4 was pressed')
+            this.timer()
+        } 
     }
 
     componentDidMount(){
-    //   this.timer()
-    }
-   
-    timer = () => {
-      setInterval(() => {
-        if (this.state.timer === 0) {
+        // this.timer()
+        document.addEventListener("keydown", this.useBonus, false);
+      }
+
+      componentWillUnmount(){
+        document.removeEventListener("keydown", this.useBonus, false);
+      }
+
+    
+ 
+     timer = () => {
+        let time = setInterval(() => {
+        if (this.state.round < 10) 
+        {
+          if (this.state.timer === 0) {
             this.getWord()
-            this.setState({
+            this.setState(prevState => {
+             return {   
                 timer: 7,
-                usedWords: [] }) }
-       else {
-        this.setState({
-            timer: this.state.timer -=  1 
-             }) } }, 1000 )
-    }  
+                usedWords: [],
+                round: prevState.round + 1   }}) }
+           else {
+            this.setState({
+                 timer: this.state.timer -=  1 
+                   }) } 
+        } else
+            {   
+                clearInterval(time)
+                this.errorMessages('Game is over!')
+                this.postGame() 
+            }
+        }, 1000) 
+    }
+    
+  
+    postGame = () => {
+        console.log('i made it')
+        const token = localStorage.token;
+        let configW = { method: 'POST',
+        headers: {'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`},
+        body: JSON.stringify({
+            user_id: localStorage.id,
+            score: `${this.state.score}` })} 
+        fetch('http://localhost:3000/games', configW) 
+           .then(resp => resp.json())
+           .then(game => console.log(game)) 
+}
 
     getWord = () => {  
-        fetch('http://localhost:3000/letters')
+        fetch('http://localhost:3000/letters', config )
         .then(resp => resp.json())
         .then(data => this.setState({
             currentWord: data
@@ -61,8 +134,7 @@ class Game extends Component {
     }
     
     checkWord = (e) => {
-        e.preventDefault()
-        console.log(e.target.children[0].value)
+        e.preventDefault() 
         if (e.target.children[0].value.length >= 3) {
         fetch(` https://wordsapiv1.p.rapidapi.com/words/${e.target.children[0].value}` , {
                 headers: {
@@ -81,118 +153,128 @@ class Game extends Component {
             this.errorMessages("Word must be at least three letters")
         }
     }
+
     wordState = (word) =>  {
       this.props.addWord(word)
       this.setState(prevState  => {
             return { usedWords: [...prevState.usedWords, word]  } }  )
-    }             
-    compare = (word, returnWord) =>  {
-        // console.log(word, returnWord)
-        const fetchLetter =  (le) => fetch(`http://localhost:3000/score/${le.toUpperCase()}`)
+    }     
+    
+    fetchLetter = (le) => { 
+        fetch(`http://localhost:3000/score/${le.toUpperCase()}`, config)
             .then(resp => resp.json())
-            .then(data => this.addScore(data ) ) 
-       
+            .then(data => this.addScore(data))  
+    }
+
+    compare = (word, returnWord) =>  {
+        word = word.trim()
         if (returnWord.word)  {
             if (!this.state.usedWords.includes(word)) {
               let letters = []
-            //   var shiftLetters =letters.slice(0, -1)
-            //   var popLetters = letters.slice(1, letters.length )
-             
+                this.setState({
+                    bonusWord: 1 
+                })
               this.state.currentWord.forEach(w => {
                  if (word.split('').join(' ').includes(w.character.toLowerCase() ) ) 
                     { letters.push(w.character.toLowerCase()) } 
               })
-              console.log(letters.slice(0, -2))
-              this.countSort(letters, word.split(''))
-
                 let uniq = [...new Set(letters)]
                 let uniqW = [...new Set(word.split(''))]
-
-                console.log(`103 submitted: ${word}, dupes: ${letters}, no dupes: ${uniq}, uniqW ${uniqW}`)
-                if (word.split("").sort().join('') === letters.sort().join(''))  
-                {  
-                  console.log(`103 submitted: ${word}, dupes: ${letters}, no dupes: ${uniq}, uniqW ${uniqW}`)
-                  this.wordState(word)
-                  letters.forEach( letter => {fetchLetter(letter)})
-                }   
-                else if (word.split("").sort().join('') === uniq.sort().join(''))  
-                     { 
-                         console.log(`110 submitted: ${word}, dupes: ${letters}, no dupes: ${uniq} `) 
-                         this.wordState(word)
-                         uniq.forEach( letter => {fetchLetter(letter)} )                   
-                     }
-                     else if (word.split("").sort().join('') === letters.slice(1, letters.length ).sort().join('')) 
-                        {    
-                            console.log(`116 submitted: ${word}, dupes: ${letters}, no dupes: ${uniq} `) 
-                            this.wordState(word)
-                            letters.forEach( letter => {fetchLetter(letter)})
-                        } else if (word.split("").sort().join('') === letters.slice(0, -1).sort().join(''))
-                        { 
-                            console.log(` 126 submitted: ${word}, dupes: ${letters}, no dupes: ${uniq} `) 
-                            this.wordState(word)
-                            letters.forEach( letter => {fetchLetter(letter)})
-                        }
-                        else {
-
-                        console.log(`submitted: ${word}, shift: ${letters.slice(1, letters.length )}, no dupes: ${uniq} `) 
-                        console.log(`submitted: ${word}, pop: ${letters.slice(0, -1)}, no dupes: ${uniq} `) 
-                           this.errorMessages('All letters do not match')
-                       }
-                      
-                    } else 
-                    this.errorMessages('You have alredy used that word')
-            }  else  
-            { this.errorMessages('Not a real word') }
+                if (uniqW.sort().join('') == uniq.sort().join('')) {
+                    let counter = Object.create(null);
+                    let validity = 0 
+                    letters.forEach(w  => {
+                        counter[w] = (counter[w] || 0) + 1;
+                    }); 
+                    word.split('').forEach(word2 => {
+                        counter[word2] -= 1 
+                       if (counter[word2] < 0 )
+                        {validity++}
+                    }); 
+                   if (validity == 0) 
+                     {  
+                         if (this.state.usedWords.length == 2){
+                           this.setState(prevState => {
+                            return {bonusPoints: prevState.bonusPoints + 1,
+                                    bonusWord: 2 }
+                           } ) }
+                          if (this.state.usedWords.length == 5){
+                            this.setState(prevState => {
+                             return {bonusPoints: prevState.bonusPoints + 2,
+                                    bonusWord: 3}
+                             } ) }
+                          if (this.state.usedWords.length >= 8){
+                                this.setState(prevState => {
+                                 return {bonusPoints: prevState.bonusPoints + 3,
+                                    bonusWord: 4}
+                                } ) } 
+                        this.wordState(word)
+                        word.split('').forEach( letter => {this.fetchLetter(letter)}) 
+                      }
+                      else 
+                   return this.errorMessages('All letters do not match') 
+                } else 
+               return this.errorMessages('All letters do not match')
+             } else 
+            return this.errorMessages('You have alredy used that word')
+        }  else 
+            {
+             this.errorMessages('Not a real word')
+             this.setState(prevState => {
+               return {score: prevState.score - 1}})
+            }   
     }
     
     addScore = (points) => {
+        console.log(points[0].point)
+        console.log('bonusOn:', this.state.bonusOn)
         this.setState(prevState => {
-            return {score: prevState.score += points[0].point }
-        } )
+            return {score: prevState.score += points[0].point * this.state.bonusWord * this.state.bonusOn} } )
+        this.resetBonus()
     }
 
-    countSort = (array, wordArr) => {
-  
-        let wordC = Object.create(null);
-        let counter = Object.create(null);
+    resetBonus = () => {
+        setTimeout(() => {
+        this.setState({
+            bonusOn: 1 
+        }) }, 300)
+    }
 
-        array.forEach(function(word) {
-            counter[word] = (counter[word] || 0) + 1;
-
-             array.sort(function(x, y) {
-                 return (counter[y] - counter[x] )
-            });
-
-        }); 
-    //     wordArr.forEach(function(word) {
-    //         if ( counter[word] = counter[word] - 1 > 0)
-    //          counter[word] = counter[word] - 1 
-           
-    // }); 
-
-       
-
-        console.log(counter)
-        // console.log(wordC)
+    clear = (e) => {
+        if (e.target.value == 1 || e.target.value == 2 || e.target.value == 3 || e.target.value == 4)  {
+            e.target.value = ''
+        }
     }
 
     render(){
         return(
             
-            <Container>
+            <Container id='canvas'>
                 <Row> 
-                  <div> Score: {this.state.score} </div>  
-                  <div> Time: {this.state.timer} </div> 
-             <Form onSubmit={this.checkWord}>
-                <input type='text'></input>
-                <Button type="submit" name="Submit">Check Word</Button>
-             </Form>
-                <Button onClick={() => this.getWord()}> Try </Button>
-         
-                {this.state.currentWord.map(word => <a> {word.character} </a> ) } 
+                    <Col> 
+                       <div> Score: {this.state.score} </div>  
+                       <div> Time: {this.state.timer} </div> 
+                       <div> Bonus: {this.state.bonusPoints} </div> 
+                       <div> Bonus on  points: {this.state.bonusOn} </div> 
+                       <div> round {this.state.round} </div> 
+                      <Form onSubmit={this.checkWord}>
+                         <input type='text' onChange={(e) => this.clear(e)}></input>
+                         <Button type="submit" name="Submit">Check Word</Button>
+                     </Form>
+                     <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button>
+                     <div> <Button onClick={() => this.postGame()}>Test</Button> </div>
+                     {this.state.currentWord.map(word => <a> {word.character} </a> ) } 
+                   </Col>
+                   <Col>
+                    Use Bonus:
+                        <div>cost 4: Press 1  for double points on next valid word </div>
+                        <div>cost 8: Press 2  for triple points on next valid word </div>        
+                   </Col>
                 </Row>
-                <Row> 
-                    {this.state.usedWords.map(word => <div>{word}</div>)}
+                <Row>
+                    <Col>
+                       {this.state.usedWords.map(word => <div>{word}</div>)}
+                    </Col>
                 </Row>
                 <Row>
                     <div> 
@@ -205,7 +287,7 @@ class Game extends Component {
 }
 
 const GameContainer = connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(Game);
 
