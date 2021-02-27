@@ -2,14 +2,15 @@ import React, {Component} from 'react'
 import {Form, Button, Row, Container, Col} from 'react-bootstrap'
 
 import { connect } from "react-redux";
-import { addWord, addGame } from '../actions/index';
+import { addWord, addGame, addPoint } from '../actions/index';
 import store from "../store/index";
 
    
 function mapDispatchToProps(dispatch) {
     return {
       addWord: word => dispatch(addWord(word)),
-      addGame: game => dispatch(addGame(game))
+      addGame: game => dispatch(addGame(game)), 
+      addPoint: point => dispatch(addPoint(point))
     };
   }
 
@@ -228,11 +229,14 @@ class Game extends Component {
     addScore = (points) => {
         console.log(points[0].point)
         console.log('bonusOn:', this.state.bonusOn)
+        this.props.addPoint(points[0].point)
         this.setState(prevState => {
-            return {score: prevState.score += points[0].point * this.state.bonusWord * this.state.bonusOn} } )
+            return {score: prevState.score += points[0].point * this.state.bonusWord * this.state.bonusOn,
+                    points: points[0].point * this.state.bonusWord * this.state.bonusOn} } )
         this.resetBonus()
     }
 
+    
     resetBonus = () => {
         setTimeout(() => {
         this.setState({
@@ -250,22 +254,30 @@ class Game extends Component {
         return(
             
             <Container id='canvas'>
-                <Row> 
-                    <Col> 
-                       <div> Score: {this.state.score} </div>  
-                       <div> Time: {this.state.timer} </div> 
-                       <div> Bonus: {this.state.bonusPoints} </div> 
-                       <div> Bonus on  points: {this.state.bonusOn} </div> 
-                       <div> round {this.state.round} </div> 
+                <Row className='game-page' > 
+                <Col className='letters'  > 
+                {this.state.currentWord.map(word => <a> {word.character} </a> ) } 
+                </Col>
+                </Row>
+                <Row className='game-page' > 
+                    <Col className='game-page' > 
+                       
+                       <div>{this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )} </div>
+                    
                       <Form onSubmit={this.checkWord}>
                          <input type='text' onChange={(e) => this.clear(e)}></input>
-                         <Button type="submit" name="Submit">Check Word</Button>
+                         <Button type="submit"  name="Submit">Check Word</Button>
                      </Form>
                      <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button>
                      <div> <Button onClick={() => this.postGame()}>Test</Button> </div>
-                     {this.state.currentWord.map(word => <a> {word.character} </a> ) } 
+                    
                    </Col>
                    <Col>
+                   <div> Score: {this.state.score} </div>  
+                       <div> Time: {this.state.timer} </div> 
+                       <div> Bonus: {this.state.bonusPoints} </div> 
+                       <div> Bonus on  points: {this.state.bonusOn} </div> 
+                       <div> round {this.state.round} </div>
                     Use Bonus:
                         <div>cost 4: Press 1  for double points on next valid word </div>
                         <div>cost 8: Press 2  for triple points on next valid word </div>        

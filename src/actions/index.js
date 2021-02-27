@@ -12,3 +12,7 @@ export function addWord(payload){
 export function addGame(payload){
   return {type: 'add_game', payload }
 }
+
+export function addPoint(payload){
+  return {type: 'add_point', payload }
+}

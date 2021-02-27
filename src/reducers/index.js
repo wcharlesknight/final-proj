@@ -5,7 +5,8 @@ import { configureStore } from '@reduxjs/toolkit'
 const initialState = {
   users: [],
   gameWord: [],
-  games: []
+  games: [], 
+  points: []
 };
 
 
@@ -26,8 +27,14 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       games: state.games.concat(action.payload)
+    } }
+    else if (action.type === 'add_point'){
+    return {
+      ...state,
+      points: state.points.concat(action.payload)
     }
   }
+  
   return state;
 }
 

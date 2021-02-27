@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import App from './App'
 import store from './store/index'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'magic.css/dist/magic.css'
 
 
 ReactDOM.render(
