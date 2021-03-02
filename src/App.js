@@ -14,8 +14,6 @@ class App extends Component {
     render() {
         return(
           <BrowserRouter >
-           {/* <Route exact path="/wine" render={() => { 
-        return <Wine wine={this.state.selectedWine} user={this.state.user} /> }} />  */}
             <Route exact path='/' render={() => {
               return <Login  />  }} />
             <Route exact path='/game' render={() => {

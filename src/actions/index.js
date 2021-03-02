@@ -16,3 +16,27 @@ export function addGame(payload){
 export function addPoint(payload){
   return {type: 'add_point', payload }
 }
+
+export function nextRound(payload){
+  return {type: 'next_round', payload }
+}
+
+export function changeTimer(payload){
+  return {type: 'change_timer', payload }
+}
+
+export function resetWords(payload){
+  return {type: 'reset_words', payload }
+}
+
+export function changeBonus(payload){
+  return {type: 'change_bonus', payload}
+}
+
+export function resetPoints(payload){
+  return {type: 'reset_points', payload }
+}
+
+export function toggleGame(payload){
+  return {type: 'toggle_game', payload }
+}

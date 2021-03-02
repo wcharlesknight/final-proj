@@ -6,7 +6,11 @@ const initialState = {
   users: [],
   gameWord: [],
   games: [], 
-  points: []
+  points: [],
+  score: 0,
+  round: 0,
+  timer: 7, 
+  gameOver: false
 };
 
 
@@ -30,10 +34,37 @@ function rootReducer(state = initialState, action) {
     } }
     else if (action.type === 'add_point'){
     return {
+       ...state,
+         points: state.points.concat(action.payload),
+         score: state.score + action.payload
+    } }
+    else if (action.type == 'next_round') { 
+    return {
       ...state,
-      points: state.points.concat(action.payload)
-    }
-  }
+        round: state.round + 1
+   } }
+   else if (action.type == 'change_timer') { 
+    return {
+      ...state,
+        timer: state.timer + action.payload
+   } }
+   else if (action.type == 'reset_words') { 
+    return {
+      ...state,
+      gameWord: []
+   } }
+   else if (action.type == 'reset_points') { 
+    return {
+      ...state,
+      points: []
+   } }
+   else if (action.type == 'toggle_game') { 
+    return {
+      ...state,
+        gameOver: !state.gameOver
+    }}
+   
+  
   
   return state;
 }

@@ -1,16 +1,31 @@
 import React, {Component} from 'react'
 import {Form, Button, Row, Container, Col} from 'react-bootstrap'
-
+import GameOver from './GameOver'
 import { connect } from "react-redux";
-import { addWord, addGame, addPoint } from '../actions/index';
-import store from "../store/index";
+import { addWord, 
+         addGame, 
+        addPoint,  
+        nextRound, 
+        changeTimer, 
+        resetWords, 
+        changeBonus, 
+        resetPoints, 
+        toggleGame} from '../actions/index';
+import Stats from './Stats'
+import {withRouter} from 'react-router-dom'
 
    
 function mapDispatchToProps(dispatch) {
     return {
       addWord: word => dispatch(addWord(word)),
       addGame: game => dispatch(addGame(game)), 
-      addPoint: point => dispatch(addPoint(point))
+      addPoint: point => dispatch(addPoint(point)),
+      nextRound: round => dispatch(nextRound()),
+      changeTimer: amount => dispatch(changeTimer(amount)),
+      resetWords: word => dispatch(resetWords()),
+      changeBonus: bonus => dispatch(changeBonus(bonus  )),
+      resetPoints:  points => dispatch(resetPoints()),
+      toggleGame: game => dispatch(toggleGame()) 
     };
   }
 
@@ -26,14 +41,11 @@ class Game extends Component {
     state = {
 
         currentWord: [],
-        score: 0,
-        timer: 7,
-        usedWords: [],
         error: '',
         bonusPoints: 0,
         bonusWord: 1,
         bonusOn: 1,
-        round: 0
+        gameOver: false
     
     }
 
@@ -43,7 +55,7 @@ class Game extends Component {
               this.setState(prevState => {
                  return {bonusPoints: prevState.bonusPoints - 4,
                           bonusOn: 2}
-                })} 
+                }) }
             else 
                  this.errorMessages('Not enough bonus points')
         }
@@ -78,24 +90,25 @@ class Game extends Component {
  
      timer = () => {
         let time = setInterval(() => {
-        if (this.state.round < 10) 
-        {
-          if (this.state.timer === 0) {
+        if (this.props.round < 2) 
+        { 
+          if (this.props.timer === 0) {
             this.getWord()
-            this.setState(prevState => {
-             return {   
-                timer: 7,
-                usedWords: [],
-                round: prevState.round + 1   }}) }
+            this.props.nextRound()
+            this.props.changeTimer(7)
+            this.props.resetWords()
+            this.setBonus()
+          }
+              
            else {
-            this.setState({
-                 timer: this.state.timer -=  1 
-                   }) } 
+            this.props.changeTimer(-1)
+                } 
         } else
             {   
                 clearInterval(time)
                 this.errorMessages('Game is over!')
-                this.postGame() 
+                this.postGame()
+                this.props.toggleGame()
             }
         }, 1000) 
     }
@@ -109,10 +122,10 @@ class Game extends Component {
                   Authorization: `Bearer ${token}`},
         body: JSON.stringify({
             user_id: localStorage.id,
-            score: `${this.state.score}` })} 
+            score: `${this.props.score}` })} 
         fetch('http://localhost:3000/games', configW) 
            .then(resp => resp.json())
-           .then(game => console.log(game)) 
+           .then(game => this.props.addGame({user_id: game.user_id, score: game.score})) 
 }
 
     getWord = () => {  
@@ -155,10 +168,30 @@ class Game extends Component {
         }
     }
 
+    setBonus = () => {
+      const {gameWord} = this.props
+      setTimeout(() => {
+        if (gameWord.length == 2){
+        this.setState({
+            bonusWord: 2
+        }) }
+        else if (gameWord.length == 5){
+            this.setState({
+                bonusWord: 3
+            }) }
+            else if (gameWord.length >= 8){
+                this.setState({
+                    bonusWord: 4
+                }) }
+                else {
+                    this.setState({
+                        bonusWord: 1 
+                    })}
+    }, 300)
+    }
     wordState = (word) =>  {
       this.props.addWord(word)
-      this.setState(prevState  => {
-            return { usedWords: [...prevState.usedWords, word]  } }  )
+      this.setBonus()
     }     
     
     fetchLetter = (le) => { 
@@ -169,12 +202,12 @@ class Game extends Component {
 
     compare = (word, returnWord) =>  {
         word = word.trim()
+        this.props.resetPoints()
+        this.setBonus()
         if (returnWord.word)  {
-            if (!this.state.usedWords.includes(word)) {
-              let letters = []
-                this.setState({
-                    bonusWord: 1 
-                })
+            if (!this.props.gameWord.includes(word)) {
+              let letters = [] 
+              
               this.state.currentWord.forEach(w => {
                  if (word.split('').join(' ').includes(w.character.toLowerCase() ) ) 
                     { letters.push(w.character.toLowerCase()) } 
@@ -194,17 +227,17 @@ class Game extends Component {
                     }); 
                    if (validity == 0) 
                      {  
-                         if (this.state.usedWords.length == 2){
+                         if (this.props.gameWord.length == 2){
                            this.setState(prevState => {
                             return {bonusPoints: prevState.bonusPoints + 1,
-                                    bonusWord: 2 }
+                                    bonusWord: 2}
                            } ) }
-                          if (this.state.usedWords.length == 5){
+                          if (this.props.gameWord.length == 5){
                             this.setState(prevState => {
                              return {bonusPoints: prevState.bonusPoints + 2,
                                     bonusWord: 3}
                              } ) }
-                          if (this.state.usedWords.length >= 8){
+                          if (this.props.gameWord.length >= 8){
                                 this.setState(prevState => {
                                  return {bonusPoints: prevState.bonusPoints + 3,
                                     bonusWord: 4}
@@ -227,21 +260,19 @@ class Game extends Component {
     }
     
     addScore = (points) => {
-        console.log(points[0].point)
-        console.log('bonusOn:', this.state.bonusOn)
-        this.props.addPoint(points[0].point)
-        this.setState(prevState => {
-            return {score: prevState.score += points[0].point * this.state.bonusWord * this.state.bonusOn,
-                    points: points[0].point * this.state.bonusWord * this.state.bonusOn} } )
+        this.props.addPoint(points[0].point * this.state.bonusWord * this.state.bonusOn)
         this.resetBonus()
     }
+
+    
 
     
     resetBonus = () => {
         setTimeout(() => {
         this.setState({
-            bonusOn: 1 
-        }) }, 300)
+            bonusOn: 1
+        })
+    }, 300)
     }
 
     clear = (e) => {
@@ -252,40 +283,30 @@ class Game extends Component {
 
     render(){
         return(
-            
-            <Container id='canvas'>
-                <Row className='game-page' > 
-                <Col className='letters'  > 
-                {this.state.currentWord.map(word => <a> {word.character} </a> ) } 
-                </Col>
+            <div>   
+             {this.props.gameOver === false ?
+             <Container id='canvas'>
+                <Row className='box-fixed'> 
+                 {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}
+                 <Col className='letters'  > 
+                 </Col>
                 </Row>
-                <Row className='game-page' > 
-                    <Col className='game-page' > 
-                       
-                       <div>{this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )} </div>
-                    
+                <Row > 
+                    <Col className='text-center'>
+                    <div > {this.state.currentWord.map(word => <a> {word.character} </a> ) } </div>
                       <Form onSubmit={this.checkWord}>
                          <input type='text' onChange={(e) => this.clear(e)}></input>
                          <Button type="submit"  name="Submit">Check Word</Button>
                      </Form>
                      <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button>
-                     <div> <Button onClick={() => this.postGame()}>Test</Button> </div>
-                    
                    </Col>
-                   <Col>
-                   <div> Score: {this.state.score} </div>  
-                       <div> Time: {this.state.timer} </div> 
-                       <div> Bonus: {this.state.bonusPoints} </div> 
-                       <div> Bonus on  points: {this.state.bonusOn} </div> 
-                       <div> round {this.state.round} </div>
-                    Use Bonus:
-                        <div>cost 4: Press 1  for double points on next valid word </div>
-                        <div>cost 8: Press 2  for triple points on next valid word </div>        
+                   <Col >
+                        <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
                    </Col>
                 </Row>
                 <Row>
                     <Col>
-                       {this.state.usedWords.map(word => <div>{word}</div>)}
+                       {this.props.gameWord.map(word => <div>{word}</div>)}
                     </Col>
                 </Row>
                 <Row>
@@ -293,7 +314,11 @@ class Game extends Component {
                     {this.state.error}
                     </div>
                 </Row>
-            </Container>
+            </Container> 
+            :  
+            <GameOver gameStart={this.toggleGame}/> }
+            </div>
+                
         )
      }
 }
