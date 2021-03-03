@@ -72,7 +72,7 @@ class PreWelcome extends Component {
                </Row>
                <Row className='game-page'>
                    <Col className={this.state.scoreBox}>
-                   <Card className='score-box text-center position-fixed'>
+                   <Card className='score-box text-center'>
                    <Card.Header as="h5">{this.state.leaders ? 'Leaders' : 'Your High Scores'}</Card.Header>
                    {this.state.leaders ? 
                    <Card.Body> 

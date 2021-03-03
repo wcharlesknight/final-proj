@@ -32,6 +32,8 @@
   color: white;
 }
 
+
+
 .login {
   display: flex;
   justify-content: center;
@@ -48,20 +50,25 @@
 
 .game-page {
   display: flex;
+ 
   justify-content: center;
   align-items: center;
   height: 200px;
 }
 
 .words{
+ 
   position: relative;
-  top: 250px;
+  top: 100px;
   font-size: 250%;
+  width: 800px;
+ 
 }
 
 .used-words{
   flex-wrap: wrap;
-  font-size: 150%; 
+  font-size: 120%;
+  height: 300px;
 }
 
 .flying-words{
@@ -96,9 +103,9 @@
 }
 
 .score-box{
-  top: 280px;
-  left: 500px;
-
+  top: 200px;
+  right: 440px;
+  
 }
 
 .full-height{
@@ -107,6 +114,17 @@
 
 .full-width{
   width: 100vh;
+}
+
+.scrabble-body {
+  height: 100vh;
+  display: flex;
+  font-family: arial, sans-serif;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHJhZGlhbEdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjYwJSIgcj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0iIzFhNDkwYSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzFlMTgxNCIvPjwvcmFkaWFsR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+  background-size: 100%;
+  background-image: radial-gradient(60% 400px at 50% 60%, #1a490a 5%, #1e1814 100%);
+  -webkit-perspective: 500px;
+          perspective: 500px;
 }
 
 .button {
@@ -124,4 +142,46 @@
   background-image: linear-gradient(-45deg, #f761a1 0, #8c1bab 100%);
   box-shadow: 0 3px 13px 0 rgba(14, 9, 73, 0.2),
     0 11px 21px 0 rgba(255, 166, 220, 0.004);
+}
+
+.tile {
+  width: 510px;
+  height: 110px;
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: calc((100vh - 160px) * 0.54);
+  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/329180/light-wood-tile.jpg);
+  background-size: 100%;
+  font-size: 5vh;
+  text-align: center;
+  line-height: 160px;
+  color: #1b1919;
+  text-shadow: 0 -1px 0 black, 0 2px 2px white;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5), inset 0 -2px 8px rgba(0, 0, 0, 0.5), 0 10px 40px rgba(0, 0, 0, 0.25);
+  border-radius: 8%;
+  overflow: hidden;
+  -webkit-transform: rotateX(25deg);
+          transform: rotateX(25deg);
+  border-bottom: 10px solid rgba(0, 0, 0, 0.75);
+  border-top: 10px  solid rgba(114, 111, 111, 0.75)}
+.tile span {
+  position: absolute;
+  padding-right: -10px;
+  right: 4.2px;
+  bottom: -15.2px;
+  font-size: 20.2px;
+  line-height: 2;
+}
+.tile::after {
+  content: '';
+  position: absolute;
+  // min-width: 60px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHJhZGlhbEdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjIwJSIgcj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSI1JSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMC42NSIvPjwvcmFkaWFsR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+  background-size: 100%;
+  background-image: radial-gradient(100% 100% at 40% 20%, rgba(0, 0, 0, 0.1) 5%, rgba(0, 0, 0, 0.65) 100%);
 }

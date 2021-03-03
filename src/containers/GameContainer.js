@@ -79,6 +79,7 @@ class Game extends Component {
 
     componentDidMount(){
         // this.timer()
+        // window.location.reload()
         document.addEventListener("keydown", this.useBonus, false);
       }
 
@@ -277,6 +278,12 @@ class Game extends Component {
         }
     }
 
+    exitGame = () => {
+        this.props.history.push('/welcome')
+        window.location.reload()
+        
+    }
+
     render(){
         return(
             <div>   
@@ -285,15 +292,15 @@ class Game extends Component {
                 <Row className='box-fixed text-center'>
                  <div className='position-fixed score-top'>Score: {this.props.score}</div>
                  <div className='flying-words'> {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}</div>
-                 <div className='position-fixed words'> {this.state.currentWord.map(word => <a > {word.character} </a> ) } </div>
+                 <div className=' words m-2'> {this.state.currentWord.map(word => <a class='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
                 </Row>
                 <Row className='box-fixed'>
                 <Col className='text-center'>
                         <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
-                        <Button className='button' onClick={() => this.props.history.push('/welcome') }>Exit Game</Button>
+                        <Button className='button' onClick={() => this.exitGame() }>Exit Game</Button>
                    </Col>
                     <Col className='text-center '>
-                      <Form onSubmit={this.checkWord}> 
+                      <Form  onSubmit={this.checkWord}> 
                          <input type='text' onChange={(e) => this.clear(e)}></input>
                          <Button  className='button' type="submit"  name="Submit">Check Word</Button>
                      </Form>
@@ -304,18 +311,17 @@ class Game extends Component {
                    </Col>
                    <Col className='text-center'>
                        <Card className='used-words'>
+                           <Card.Header>Used Words</Card.Header>
                            <Card.Body> 
-                       {this.props.gameWord.map(word => <Card.Text className='used-words m-0'>{word}</Card.Text>)}
+                                {this.props.gameWord.map(word => <Card.Text className=' m-0'>{word}</Card.Text>)}
                             </Card.Body>
                        </Card>
                     </Col>
                 </Row>
-           
             </Container> 
             :  
             <GameOver gameStart={this.toggleGame}/> }
             </div>
-                
         )
      }
 }
