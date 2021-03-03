@@ -12,7 +12,7 @@ import 'magic.css/dist/magic.css'
 
 ReactDOM.render(
   <Provider store={store} > 
-    <App/>
+    <App className='app-font' />
   </Provider>,
   document.getElementById('root')
 );

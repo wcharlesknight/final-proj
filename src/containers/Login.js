@@ -53,7 +53,7 @@ class PreConnectLogin extends Component {
       localStorage.setItem("token", token);
       localStorage.setItem("id", this.state.user.id)
       this.props.addUser({ username,  password, id})
-      this.props.history.push("/game")
+      this.props.history.push("/welcome")
     } else if (data.error) {
       this.setState({
         error: data.error,
@@ -104,10 +104,7 @@ class PreConnectLogin extends Component {
     const token = localStorage.token;
     if (token) {
       this.persistUser(token);
-    }
-    // if (this.state.login)  
-    //   {  this.props.history.push('/game')  }
-  }
+    }}
 
   persistUser = (token) => {
     fetch(API + "/persist", {
@@ -143,7 +140,6 @@ render() {
     {!!error && <h1>{error}</h1>}
     <form onSubmit={this.handleSubmit}>
       <div>
-
         <label htmlFor="username">Username</label>
         <input
           type="text"
@@ -164,15 +160,17 @@ render() {
         />
       </div> 
     
-      <button onClick={() => this.login()} type="submit">Login</button>
-      <button type="submit">Signup</button>
-   
-
+        <Button className={this.state.login ? 'invisible' : ''} onClick={() => this.login()} type="submit">Login</Button>
+        <Button className={this.state.login ? 'invisible' : ''}  type="submit">Signup</Button>
+  
     </form>
     {
      login ?
-    <Button onClick={this.handleLogout}>Logout</Button>
-    : null 
+     <div>
+        <Button onClick={this.handleLogout}>Logout</Button> 
+        <Button onClick={() => this.props.history.push('/welcome')}>To Homepage</Button> 
+     </div>
+    : null
     }
     </Container> 
   );

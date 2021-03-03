@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Button, Row, Container, Col} from 'react-bootstrap'
+import {Form, Button, Row, Container, Col, Card} from 'react-bootstrap'
 import GameOver from './GameOver'
 import { connect } from "react-redux";
 import { addWord, 
@@ -45,7 +45,7 @@ class Game extends Component {
         bonusPoints: 0,
         bonusWord: 1,
         bonusOn: 1,
-        gameOver: false
+       
     
     }
 
@@ -113,7 +113,6 @@ class Game extends Component {
         }, 1000) 
     }
     
-  
     postGame = () => {
         console.log('i made it')
         const token = localStorage.token;
@@ -264,9 +263,6 @@ class Game extends Component {
         this.resetBonus()
     }
 
-    
-
-    
     resetBonus = () => {
         setTimeout(() => {
         this.setState({
@@ -285,35 +281,36 @@ class Game extends Component {
         return(
             <div>   
              {this.props.gameOver === false ?
-             <Container id='canvas'>
-                <Row className='box-fixed'> 
-                 {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}
-                 <Col className='letters'  > 
-                 </Col>
+             <Container id='canvas' fluid className='full-height app-font'>
+                <Row className='box-fixed text-center'>
+                 <div className='position-fixed score-top'>Score: {this.props.score}</div>
+                 <div className='flying-words'> {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}</div>
+                 <div className='position-fixed words'> {this.state.currentWord.map(word => <a > {word.character} </a> ) } </div>
                 </Row>
-                <Row > 
-                    <Col className='text-center'>
-                    <div > {this.state.currentWord.map(word => <a> {word.character} </a> ) } </div>
-                      <Form onSubmit={this.checkWord}>
+                <Row className='box-fixed'>
+                <Col className='text-center'>
+                        <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
+                        <Button className='button' onClick={() => this.props.history.push('/welcome') }>Exit Game</Button>
+                   </Col>
+                    <Col className='text-center '>
+                      <Form onSubmit={this.checkWord}> 
                          <input type='text' onChange={(e) => this.clear(e)}></input>
-                         <Button type="submit"  name="Submit">Check Word</Button>
+                         <Button  className='button' type="submit"  name="Submit">Check Word</Button>
                      </Form>
                      <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button>
+                     <div> 
+                      {this.state.error}
+                     </div>
                    </Col>
-                   <Col >
-                        <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
-                   </Col>
-                </Row>
-                <Row>
-                    <Col>
-                       {this.props.gameWord.map(word => <div>{word}</div>)}
+                   <Col className='text-center'>
+                       <Card className='used-words'>
+                           <Card.Body> 
+                       {this.props.gameWord.map(word => <Card.Text className='used-words m-0'>{word}</Card.Text>)}
+                            </Card.Body>
+                       </Card>
                     </Col>
                 </Row>
-                <Row>
-                    <div> 
-                    {this.state.error}
-                    </div>
-                </Row>
+           
             </Container> 
             :  
             <GameOver gameStart={this.toggleGame}/> }
@@ -328,4 +325,4 @@ const GameContainer = connect(
     mapDispatchToProps
   )(Game);
 
-export default GameContainer
+export default withRouter(GameContainer)

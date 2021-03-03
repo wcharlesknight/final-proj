@@ -10,7 +10,9 @@ const initialState = {
   score: 0,
   round: 0,
   timer: 7, 
-  gameOver: false
+  gameOver: false,
+  highScores: [], 
+  leaders: []
 };
 
 
@@ -63,6 +65,16 @@ function rootReducer(state = initialState, action) {
       ...state,
         gameOver: !state.gameOver
     }}
+    else if (action.type === 'add_high') {
+      return {
+        ...state,
+        highScores: action.payload
+      } }
+      else if (action.type === 'add_leaders') {
+        return {
+          ...state,
+          leaders: action.payload
+        } }
    
   
   

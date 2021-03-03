@@ -12,7 +12,6 @@ const CurrentRo = (props) => {
          <Card.Header as="h5">Round: {props.round} </Card.Header>
       <Card.Body>
         <Card.Text>Time: {props.timer} secs</Card.Text>
-        <Card.Text>Score: {props.score}</Card.Text>
         <Card.Text>Round: {props.round} of 10</Card.Text>
         <Card.Text>Bonus: {props.bonus} </Card.Text>
         <Card.Text>Bonus Points: {props.bonusPoints} </Card.Text>

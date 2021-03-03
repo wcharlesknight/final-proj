@@ -40,3 +40,11 @@ export function resetPoints(payload){
 export function toggleGame(payload){
   return {type: 'toggle_game', payload }
 }
+
+export function addHigh(payload){
+  return {type: 'add_high', payload }
+}
+
+export function addLeader(payload){
+  return {type: 'add_leaders', payload }
+}
