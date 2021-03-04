@@ -8,7 +8,7 @@ import GameContainer from './containers/GameContainer'
 import PubNub from 'pubnub';
 import Swal from "sweetalert2";  
 import shortid  from 'shortid';
-import {PubNubProvider} from 'pubnub-react';
+import * as PubNubReact from 'pubnub-react';
 
 
 
@@ -17,26 +17,23 @@ class App extends Component {
     super(props);
     // REPLACE with your keys
     
+     this.pubnub = new PubNub({
+      publishKey: 'pub-c-5ad20334-5930-4ee0-9116-961fa5522951', 
+      subscribeKey: "sub-c-54d6ec38-7c73-11eb-9123-deb22d7a9880"     })
     
     this.state = {
-    
       isPlaying: false, // Set to true when 2 players are in a channel
       isRoomCreator: false,
       isDisabled: false,
-    
     };
 
     this.lobbyChannel = null; // Lobby channel
     this.gameChannel = null; // Game channel
     this.roomId = null; // Unique id when player creates a room   
-    // pubnub.init(this); // Initialize PubNub
+   
   }  
 
-  pubnub = () => { 
-    new PubNub({
-    publishKey: 'pub-c-5ad20334-5930-4ee0-9116-961fa5522951', 
-    subscribeKey: "sub-c-54d6ec38-7c73-11eb-9123-deb22d7a9880"    
-  })
+  
   
   onPressCreate = (e) => {
     // Create a random name for the channel
@@ -63,10 +60,8 @@ class App extends Component {
       }
     })
     this.setState({
-     
       isRoomCreator: true,
-      isDisabled: true, // Disable the 'Create' button
-  
+      isDisabled: true, // Disable the 'Create' butto
     });
   }
 
@@ -98,33 +93,68 @@ class App extends Component {
   joinRoom = (value) => {
     this.roomId = value;
     this.lobbyChannel = 'speedwordslobby--' + this.roomId;
+    console.log(this.lobbyChannel)
+    this.pubnub.hereNow({
+      channels: [this.lobbyChannel], 
+    }).then((response) => { 
+        if(response.totalOccupancy < 2){
+          this.pubnub.subscribe({
+            channels: [this.lobbyChannel],
+            withPresence: true
+          });
+          this.pubnub.publish({
+            message: {
+              notRoomCreator: true,
+            },
+            channel: this.lobbyChannel
+          });
+        } 
+        else{
+          // Game in progress
+          Swal.fire({
+            position: 'top',
+            allowOutsideClick: false,
+            title: 'Error',
+            text: 'Game in progress. Try another room.',
+            width: 275,
+            padding: '0.7em',
+            customClass: {
+                heightAuto: false,
+                title: 'title-class',
+                popup: 'popup-class',
+                confirmButton: 'button-class'
+            }
+          })
+        }
+    }).catch((error) => { 
+      console.log(error);
+    });
   }
 
-  pubnub.hereNow({
-    channels: [this.lobbyChannel], 
-  }).then((response) => { 
-      if(response.totalOccupancy < 2){
-        this.pubnub.subscribe({
-          channels: [this.lobbyChannel],
-          withPresence: true
-        });
-        
-       
-        this.pubnub.publish({
-          message: {
-            notRoomCreator: true,
-          },
-          channel: this.lobbyChannel
-        });
-      } 
-  }).catch((error) => { 
-    console.log(error);
-  });
- 
+  // componentDidUpdate() {
+  //   // Check that the player is connected to a channel
+  //   if(this.lobbyChannel != null){
+  //     this.pubnub.getMessage(this.lobbyChannel, (msg) => {
+  //       // Start the game once an opponent joins the channel
+  //       if(msg.message.notRoomCreator){
+  //         // Create a different channel for the game
+  //         this.gameChannel = 'speedwordslobby--' + this.roomId;
+  
+  //         this.pubnub.subscribe({
+  //           channels: [this.gameChannel]
+  //         });
+  //       }
+  //     }); 
+  //   }
+  // }
+
+  testRoom = (event) => {
+    this.pubnub.publish({message:  event.target.value})
+  }
 
     render() {
         return(
-          <PubNubProvider client={pubnub} >
+         
           <BrowserRouter >
             <div> 
             <div className="title">
@@ -148,6 +178,9 @@ class App extends Component {
                 onClick={(e) => this.onPressJoin()}
                 > Join 
               </button>
+              <form>
+                <input  type='text' onChange={this.testRoom}></input>
+              </form>
             </div>                        
           </div>
         </div>
@@ -168,7 +201,7 @@ class App extends Component {
             <Route exact path='/welcome' render={() => {
               return <Welcome   />  }} />
         </BrowserRouter>
-        </PubNubProvider>
+      
       ) }
 
 }
