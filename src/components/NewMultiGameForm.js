@@ -1,5 +1,6 @@
 import React from 'react';
 import { API_ROOT, HEADERS } from '../constants';
+import {withRouter} from 'react-router-dom'
 
 class NewMultiGameForm extends React.Component {
   state = {
@@ -17,7 +18,11 @@ class NewMultiGameForm extends React.Component {
       method: 'POST',
       headers: HEADERS,
       body: JSON.stringify(this.state)
-    }).then(this.setState({ result: '' }))
+    }).then(res  => res.json())
+      .then(game =>  {
+      this.props.onReceived({player: {name: 'P1', user_id: localStorage.id, multi_game_id: game.id}})  
+      this.props.history.push(`/multi/${game.id}`)
+    })
   };
 
   render = () => {

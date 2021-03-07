@@ -14,7 +14,10 @@ const initialState = {
   highScores: [], 
   leaders: [],
   channel: '',
-  multiGame: ''
+  multiGame: '',
+  playerOne: '',
+  playerTwo: '',
+  multiPoints: ''
 };
 
 
@@ -87,6 +90,21 @@ function rootReducer(state = initialState, action) {
         ...state,
         multiGame: action.payload
     } }
+    else if (action.type === 'set_player_one') {
+      return {
+      ...state,
+      playerOne: action.payload.player
+  } }
+  else if (action.type === 'set_player_two') {
+    return {
+    ...state,
+    playerTwo: action.payload.player
+} }
+else if (action.type === 'add_multi_points') {
+  return {
+  ...state,
+  multiPoints: action.payload.multi_score.points
+} }
   return state;
 }
 

@@ -56,3 +56,16 @@ export function changeChannel(payload){
 export function currentMulti(payload){
   return {type: 'current_multi', payload }
 }
+
+export function onReceived(payload){
+  if (Object.keys(payload).includes('player')) {
+    if (Object.keys(payload.player.name).includes('P2')) {
+      return {type: 'set_player_one', payload} } 
+    else {
+      return {type: 'set_player_two', payload}
+    } }
+  else if (Object.keys(payload).includes('multi_score')) {
+    return {type: 'add_multi_points', payload}
+  }
+  
+}

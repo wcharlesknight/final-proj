@@ -60,16 +60,6 @@ class PreMultiGamesList extends React.Component {
   
 
       <div className="multiGamesList">
-        {/* <ActionCableConsumer
-          channel={{ channel: 'MultiGamesChannel' }}
-          onReceived={this.handleReceivedMultiGame}
-        />
-        {this.state.multiGames.length ? (
-          <Cable
-            multiGames={multiGames}
-            handleReceivedMultiScore={this.handleReceivedMultiScore}
-          />
-        ) : null} */}
         <h2>Multiplayer Games</h2>
         <ul>{mapMultiGames(multiGames, this.handleClick)}</ul>
         <NewMultiGameForm />

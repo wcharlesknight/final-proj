@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { ActionCableConsumer ,  ActionCableController} from 'react-actioncable-provider';
 import { API_ROOT, HEADERS} from '../constants';
-
 import Cable from './Cable';
 import {Container} from 'react-bootstrap'
 import { connect } from "react-redux";
@@ -9,15 +8,14 @@ import {createConsumer} from 'actioncable'
 import { API_WS_ROOT } from '../constants/index' 
 import actioncable from 'actioncable'
 import createReactClass from 'create-react-class'
+import  store   from '../store/index'
+import { onReceived } from '../actions/index'
+
 
 const consumer = actioncable.createConsumer(API_WS_ROOT)
 
 function mapStateToProps(state){
     return state
-}
-
-var onReceived = (data) => {
-    console.log(data)
 }
 
 
@@ -26,18 +24,17 @@ class PreMultiplayerRoom extends Component{
         super(props);
         
         this.state = {
-        playerOne: {},
-        playerTwo: {},
+       
         streamId: window.location.pathname.split('/')[2],
         score: '',
-        points: '',
-        onReceived: ''
+        points: ''
+       
     }
    
-
+   
     }
     setPlayer = () => {
-        console.log(onReceived)
+       
         let configA =  {method: 'GET',
         headers: {'Content-Type': 'application/json',
                   Authorization: `Bearer ${localStorage.token}`} }
@@ -64,7 +61,7 @@ class PreMultiplayerRoom extends Component{
         name: `P1`, 
         multi_game_id: this.state.streamId})} 
     fetch(`http://localhost:3000/players`, configE)
-    //   .then(
+    //.then(
     //       onReceived ? this.setState({playerOne: onReceived.player}) :
  
     //       this.setState({playerOne:  })
@@ -82,8 +79,8 @@ makePlayerTwo =  () => {
         multi_game_id: this.state.streamId })} 
 
     fetch(`http://localhost:3000/players`, configW)
-    .then(
-        onReceived ? console.log(onReceived) : null)
+    // .then(
+    //     onReceived ? console.log(onReceived) : null)
 }
     handleChange = (data) => {
         console.log(data)
@@ -91,16 +88,17 @@ makePlayerTwo =  () => {
 
     componentDidMount = () => {
         this.setupSubscription()
-        this.setPlayer()
+        // this.setPlayer()
     }
 
     setupSubscription = () => {
        this.setState({gameChannel: consumer.subscriptions.create({channel: "MultiGamesChannel", id: this.state.streamId }, {
             received(data){
-               PreMultiplayerRoom.handleChange(data)
-            }}
-       )})
-        }
+               store.dispatch(onReceived(data))
+           }
+        })
+      })
+    }
     
     
     componentWillUnmount() {
@@ -109,10 +107,6 @@ makePlayerTwo =  () => {
 
     handleReceived = (score) => {
         console.log(score)
-       
-        // this.setState({
-        //         score: score.multi_score.points,
-        //     })
     }    
 
     handleSubmit = (e) => {
@@ -123,15 +117,15 @@ makePlayerTwo =  () => {
           method: 'POST',
           headers: HEADERS,
           body: JSON.stringify({multi_game_id: this.state.streamId,                
-                    points: e.target.children[0].value
-        })  }).then(
-        onReceived ? this.setState({score:  onReceived.multi_score.points}) : this.setState({score:  e.target.children[0].value})
-        )
+                    points: e.target.children[0].value 
+        // })  }).then(
+        // onReceived ? this.setState({score:  onReceived.multi_score.points}) : this.setState({score:  e.target.children[0].value})
+          }) })
       };
 
    
     render(){
-        const {playerOne, playerTwo} = this.state 
+        const {playerOne, playerTwo} = this.props
        
         return(
             <div>
@@ -140,7 +134,7 @@ makePlayerTwo =  () => {
                     <input type='submit'></input>
                 </form>
                 {/* <ActionCableController channel={{channel: "MultiGamesChannel", id: this.state.streamId}} onReceived={this.handleReceived} />  */}
-                     <div> score: {this.state.score}</div>
+                     <div> score: { this.props.multiPoints}</div>
                      <div>{playerOne.name}</div>
                      <div>{playerOne.user_id}</div>
                      <div>{playerTwo.name}</div>
