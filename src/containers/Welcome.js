@@ -66,6 +66,7 @@ class PreWelcome extends Component {
            <Container className='login position-relative' >
                <Row className='game-page flex'>  
                   <Button className='button' data-micron='bounce' id='/game' onClick={(e) => this.direct(e)}> Play </Button>
+                  <Button className='button' data-micron='bounce' id='/multi' onClick={(e) => this.direct(e)}> Multiplayer Game </Button>
                   <Button className='button' data-micron='squeeze' onClick={() => this.showHighScores()}> Your High Scores </Button>
                   <Button className='button' data-micron='blink'onClick={() => this.showLeaders()}> Leaderboards</Button>
                   <Button className='button' id='/' onClick={(e) => this.direct(e)}>Back to Login</Button> 

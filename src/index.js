@@ -4,7 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
 
-import App from './App'
+import Main from './Main'
 import store from './store/index'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'magic.css/dist/magic.css'
@@ -12,7 +12,7 @@ import 'magic.css/dist/magic.css'
 
 ReactDOM.render(
   <Provider store={store} > 
-    <App className='app-font' />
+    <Main className='app-font' />
   </Provider>,
   document.getElementById('root')
 );

@@ -48,3 +48,11 @@ export function addHigh(payload){
 export function addLeader(payload){
   return {type: 'add_leaders', payload }
 }
+
+export function changeChannel(payload){
+  return {type: 'change_channel', payload }
+}
+
+export function currentMulti(payload){
+  return {type: 'current_multi', payload }
+}
