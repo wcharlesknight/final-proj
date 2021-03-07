@@ -12,3 +12,4 @@ export const HEADERS = {
 
 export const CONFIG_GET = {method: 'GET', headers: {'Content-Type': 'application/json', 
 Authorization: `Bearer ${localStorage.token}`}  } 
+

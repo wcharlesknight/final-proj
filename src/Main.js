@@ -14,9 +14,9 @@ class Main extends Component {
 
     render() {
         return(
-    <ActionCableProvider url={API_WS_ROOT}>
-         <App/> 
-    </ActionCableProvider>
+          <div>  
+             <App/> 
+          </div>
       ) }
 
 }
