@@ -13,11 +13,12 @@ const initialState = {
   gameOver: false,
   highScores: [], 
   leaders: [],
-  channel: '',
+  curMultiWord: '',
   multiGame: '',
   playerOne: '',
   playerTwo: '',
-  multiPoints: ''
+  playerTwoScore: 0,
+  playerOneScore: 0
 };
 
 
@@ -80,21 +81,26 @@ function rootReducer(state = initialState, action) {
           ...state,
           leaders: action.payload
         } }
-    else if (action.type === 'change_channel') {
+    else if (action.type === 'cur_word') {
       return {
         ...state,
-      channel: action.payload
+      curMultiWord: state.curMultiWord.concat(action.payload)
           } }
-    else if (action.type === 'current_multi') {
+    else if (action.type === 'add_player_two') {
         return {
         ...state,
-        multiGame: action.payload
+        playerTwoScore: state.playerTwoScore + action.payload.multi_score.points
     } }
-    else if (action.type === 'set_player_one') {
+    else if (action.type === 'add_player_one') {
       return {
       ...state,
-      playerOne: action.payload.player
+      playerOneScore: state.playerOneScore + action.payload.multi_score.points
   } }
+  else if (action.type === 'player_one') {
+    return {
+    ...state,
+    playerOne: action.payload
+} }
   else if (action.type === 'set_player_two') {
     return {
     ...state,
@@ -104,6 +110,16 @@ else if (action.type === 'add_multi_points') {
   return {
   ...state,
   multiPoints: action.payload.multi_score.points
+} }
+else if (action.type === 'clear_player_one') {
+  return {
+  ...state,
+ playerOne: ''
+} }
+else if (action.type === 'clear_player_two') {
+  return {
+  ...state,
+ playerTwo: ''
 } }
   return state;
 }

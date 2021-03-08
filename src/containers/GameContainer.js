@@ -45,8 +45,7 @@ class Game extends Component {
         bonusPoints: 0,
         bonusWord: 1,
         bonusOn: 1,
-       
-    
+
     }
 
     useBonus = (e) => {
@@ -131,9 +130,13 @@ class Game extends Component {
     getWord = () => {  
         fetch('http://localhost:3000/letters', config )
         .then(resp => resp.json())
-        .then(data => this.setState({
+        .then(data =>  {
+            this.props.curWord(data)
+            this.setState({
             currentWord: data
-        }))
+        }) 
+      })
+     
     }
 
     errorMessages = (message) => {
@@ -189,6 +192,7 @@ class Game extends Component {
                     })}
     }, 300)
     }
+
     wordState = (word) =>  {
       this.props.addWord(word)
       this.setBonus()
@@ -207,7 +211,6 @@ class Game extends Component {
         if (returnWord.word)  {
             if (!this.props.gameWord.includes(word)) {
               let letters = [] 
-              
               this.state.currentWord.forEach(w => {
                  if (word.split('').join(' ').includes(w.character.toLowerCase() ) ) 
                     { letters.push(w.character.toLowerCase()) } 
@@ -260,6 +263,7 @@ class Game extends Component {
     }
     
     addScore = (points) => {
+        this.props.addMultiPoints(points[0].point * this.state.bonusWord * this.state.bonusOn)
         this.props.addPoint(points[0].point * this.state.bonusWord * this.state.bonusOn)
         this.resetBonus()
     }

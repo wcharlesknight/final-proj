@@ -57,15 +57,39 @@ export function currentMulti(payload){
   return {type: 'current_multi', payload }
 }
 
+export function setPlayerOne(payload){
+  return ({type: 'player_one', payload})
+}
+
+export function setPlayerTwo(payload){
+  return ({type: 'set_player_two', payload})
+}
+
+export function clearPlayerOne(payload){
+  return ({type: 'clear_player_one', payload})
+}
+
+export function clearPlayerTwo(payload){
+  return ({type: 'clear_player_two', payload})
+}
+
 export function onReceived(payload){
   if (Object.keys(payload).includes('player')) {
-    if (Object.keys(payload.player.name).includes('P2')) {
-      return {type: 'set_player_one', payload} } 
-    else {
+    if (Object.keys(payload.player.name).includes('P2') === false) {
       return {type: 'set_player_two', payload}
+    } 
+    else {
+      return {type: 'set_player_one', payload}
     } }
   else if (Object.keys(payload).includes('multi_score')) {
-    return {type: 'add_multi_points', payload}
-  }
+        if (payload.multi_score.player_name.includes('P1')) {
+          return {type: 'add_player_one', payload}
+          } else {
+            return {type: 'add_player_two', payload}
+          } 
+        }
+        else if (Object.keys(payload).includes('curWord')) {
+            return {type: 'cur_word', payload}
+        }
+   }
   
-}
