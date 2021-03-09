@@ -1,9 +1,7 @@
 import React, {Fragment} from 'react';
-import { ActionCableConsumer } from 'react-actioncable-provider';
 import { API_ROOT } from '../constants';
 import NewMultiGameForm from './NewMultiGameForm';
 import MultiScoresArea from './MultiScoresArea';
-import Cable from './Cable';
 import {withRouter} from 'react-router-dom'
 import MultiplayerRoom from './MultiplayerRoom';
 import { connect } from "react-redux";
@@ -23,6 +21,7 @@ class PreMultiGamesList extends React.Component {
   };
 
   componentDidMount = () => {
+   
     fetch(`${API_ROOT}/multi_games`)
       .then(res => res.json())
       .then(multiGames => this.setState({ multiGames }));
@@ -57,8 +56,6 @@ class PreMultiGamesList extends React.Component {
   render = () => {
     const { multiGames, activeMultiGame } = this.state;
     return (
-  
-
       <div className="multiGamesList">
         <h2>Multiplayer Games</h2>
         <ul>{mapMultiGames(multiGames, this.handleClick)}</ul>
@@ -92,7 +89,7 @@ const mapMultiGames = (multiGames, handleClick) => {
   return multiGames.map(multiGame => {
     return (
       <li key={multiGame.id} onClick={() => handleClick(multiGame)}>
-        {multiGame.result}
+        {multiGame.result} | {multiGame.id}
       </li>
     );
   });

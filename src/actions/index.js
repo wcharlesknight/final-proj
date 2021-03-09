@@ -73,23 +73,40 @@ export function clearPlayerTwo(payload){
   return ({type: 'clear_player_two', payload})
 }
 
+export function toggleMulti(payload){
+  return ({type: 'toggle_multi', payload})
+}
+
+export function setInternal(payload){
+  return ({type: 'set_internal', payload})
+}
+
 export function onReceived(payload){
   if (Object.keys(payload).includes('player')) {
-    if (Object.keys(payload.player.name).includes('P2') === false) {
+    if (payload.player.name.includes('P1') === true) {
+      console.log(payload, 'set player one')
+      return {type: 'set_player_one', payload}
+    } 
+    if (payload.player.name.includes('P2') === true) {
+      console.log(payload, 'set player two')
       return {type: 'set_player_two', payload}
     } 
-    else {
-      return {type: 'set_player_one', payload}
-    } }
+  }
   else if (Object.keys(payload).includes('multi_score')) {
-        if (payload.multi_score.player_name.includes('P1')) {
+        if (payload.multi_score.name.includes('P1')) {
           return {type: 'add_player_one', payload}
           } else {
             return {type: 'add_player_two', payload}
           } 
         }
-        else if (Object.keys(payload).includes('curWord')) {
-            return {type: 'cur_word', payload}
+  else if (Object.keys(payload).includes('curWord')) {
+    return {type: 'cur_word', payload}
         }
+  else if (Object.keys(payload).includes('toggleMulti')){
+    return {type: 'toggle_multi', payload}
+  }
+  else if (Object.keys(payload).includes('time')) {
+      return {type: 'multi_timer', payload }
+      }
    }
   

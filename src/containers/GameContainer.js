@@ -77,7 +77,7 @@ class Game extends Component {
     }
 
     componentDidMount(){
-        // this.timer()
+        this.timer()
         // window.location.reload()
         document.addEventListener("keydown", this.useBonus, false);
       }
@@ -90,23 +90,23 @@ class Game extends Component {
  
      timer = () => {
         let time = setInterval(() => {
-        if (this.props.round < 2) 
+        if (this.props.round < 10) 
         { 
           if (this.props.timer === 0) {
             this.getWord()
             this.props.nextRound()
-            this.props.changeTimer(7)
+            this.props.multiGame === true ? this.props.multiTimer(7) : this.props.changeTimer(7) 
             this.props.resetWords()
             this.setBonus()
           }
-              
            else {
-            this.props.changeTimer(-1)
-                } 
+            this.props.multiGame === true ? this.props.multiTimer(-1) : this.props.changeTimer(-1) 
+            }
         } else
             {   
                 clearInterval(time)
                 this.errorMessages('Game is over!')
+
                 this.postGame()
                 this.props.toggleGame()
             }
@@ -131,10 +131,7 @@ class Game extends Component {
         fetch('http://localhost:3000/letters', config )
         .then(resp => resp.json())
         .then(data =>  {
-            this.props.curWord(data)
-            this.setState({
-            currentWord: data
-        }) 
+            this.props.multiGame === true ? this.props.curWord(data) : this.setState({currentWord: data}) 
       })
      
     }
@@ -211,10 +208,19 @@ class Game extends Component {
         if (returnWord.word)  {
             if (!this.props.gameWord.includes(word)) {
               let letters = [] 
-              this.state.currentWord.forEach(w => {
+              // compare word this.state.currentWord for single player
+              if (this.props.multiGame === true) {
+                this.props.curMultiWord.forEach(w => {
                  if (word.split('').join(' ').includes(w.character.toLowerCase() ) ) 
                     { letters.push(w.character.toLowerCase()) } 
-              })
+                }) 
+              }
+              else {
+                this.state.currentWord.forEach(w => {
+                    if (word.split('').join(' ').includes(w.character.toLowerCase() ) ) 
+                       { letters.push(w.character.toLowerCase()) } 
+                   }) 
+              }
                 let uniq = [...new Set(letters)]
                 let uniqW = [...new Set(word.split(''))]
                 if (uniqW.sort().join('') == uniq.sort().join('')) {
@@ -294,9 +300,19 @@ class Game extends Component {
              {this.props.gameOver === false ?
              <Container id='canvas' fluid className='full-height app-font'>
                 <Row className='box-fixed text-center'>
-                 <div className='position-fixed score-top'>Score: {this.props.score}</div>
+                { this.props.multiGame === true ? 
+                <div>
+                  <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
+                  <h1 className='opponent-score-2'>P2: {this.props.playerTwoScore}</h1> 
+                  </div>
+                  :         
+                 <div className='position-fixed score-top'>Score: {this.props.score}</div> }
                  <div className='flying-words'> {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}</div>
-                 <div className=' words m-2'> {this.state.currentWord.map(word => <a class='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
+                { this.props.multiGame === true ? 
+                 <div className=' words m-2'> {this.props.curMultiWord.map( (word, index) => <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
+                 :
+                  <div className=' words m-2'> {this.state.currentWord.map((word, index)=> <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
+                }
                 </Row>
                 <Row className='box-fixed'>
                 <Col className='text-center'>

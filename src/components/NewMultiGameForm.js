@@ -2,14 +2,15 @@ import React from 'react';
 import { API_ROOT, API_WS_ROOT, HEADERS } from '../constants';
 import {withRouter} from 'react-router-dom'
 import { connect } from "react-redux";
-import {onReceived, setPlayerOne} from '../actions/index';
+import {onReceived, setPlayerOne, setInternal} from '../actions/index';
 import actioncable from 'actioncable'
 import store from '../store/index'
 
 function mapDispatchToProps(dispatch){
   return {
     onReceived: pay => dispatch(onReceived(pay)),
-    setPlayerOne: player => dispatch(setPlayerOne(player))
+    setPlayerOne: player => dispatch(setPlayerOne(player)),
+    setInternal: info => dispatch(setInternal(info))
   }
 }
 
@@ -41,7 +42,7 @@ class PreNewMultiGameForm extends React.Component {
     method: 'POST',
     headers: HEADERS,
     body: JSON.stringify({name: 'P1', user_id: localStorage.id, multi_game_id: game.id })
-  })
+  })  .then(this.props.setInternal('P1'))
       .then(this.props.setPlayerOne({name: 'P1', user_id: localStorage.id, multi_game_id: game.id }) )
       .then(this.props.history.push(`/multi/${game.id}`)) 
     })     

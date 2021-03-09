@@ -9,7 +9,7 @@ import { API_WS_ROOT } from '../constants/index'
 import actioncable from 'actioncable'
 import {withRouter} from 'react-router-dom'
 import  store   from '../store/index'
-import { onReceived, setPlayerOne, clearPlayerOne, clearPlayerTwo } from '../actions/index'
+import { onReceived, setPlayerOne, clearPlayerOne, clearPlayerTwo, toggleMulti, setInternal} from '../actions/index'
 import GameContainer from '../containers/GameContainer'
 
 
@@ -23,7 +23,9 @@ function mapDispatchToProps(dispatch) {
     return {
       setPlayerOne: player => dispatch(setPlayerOne(player)),
       clearPlayerOne: () => dispatch(clearPlayerOne()),
-      clearPlayerTwo: () => dispatch(clearPlayerTwo())
+      clearPlayerTwo: () => dispatch(clearPlayerTwo()),
+      toggleMulti: () => dispatch(toggleMulti()),
+      setInternal:info =>  dispatch(setInternal(info))
     }} 
 
 class PreMultiplayerRoom extends Component{
@@ -35,30 +37,28 @@ class PreMultiplayerRoom extends Component{
         streamId: window.location.pathname.split('/')[2],
         score: '',
         points: '',
-        gameChannel: '',
-        full: true
+        gameChannel: ''
+       
        
     }}
 
     setPlayer = () => {
+        console.log(this.props.playerOne.user_id != localStorage.id, 'comparison on setplayer')
+        if ( this.props.playerOne.user_id != localStorage.id ) {
         let configA =  {method: 'GET',
         headers: {'Content-Type': 'application/json',
                   Authorization: `Bearer ${localStorage.token}`} }
         fetch(`http://localhost:3000/multi_games/${this.state.streamId}`, configA)
             .then(res => res.json())
-            .then(game => { console.log(game.players[0].user_id.toString() == localStorage.id)
-                if(game) { 
-                    if (game.players[0].user_id.toString() != localStorage.id){
-                        console.log(game, 'here')
-                        // this.props.setPlayerOne(game.players[0])   
-                        this.makePlayerTwo()
-                    }}
-                    this.props.setPlayerOne(game.players[0])   
-            }) 
+            .then(game =>  {
+                this.props.setPlayerOne(game.players[0])
+                this.makePlayerTwo()
+            })
+        }
     }
           
 makePlayerTwo =  () => {
-    console.log('made it')
+    console.log('made it to make player two')
     const token = localStorage.token;
     let configW = { method: 'POST',
     headers: {'Content-Type': 'application/json',
@@ -66,16 +66,15 @@ makePlayerTwo =  () => {
     body: JSON.stringify({
         user_id: localStorage.id,
         name: `P2`, 
-        multi_game_id: this.state.streamId })} 
+        multi_game_id: this.state.streamId })}  
     fetch(`http://localhost:3000/players`, configW)
-    .then(this.setState({
-        full: true, 
-       
-    })
-    )
+    .then(this.props.setInternal('P2'))
+    .then(this.state.gameChannel.send({toggleMulti: ''}))
+    
 }
 
     componentDidMount = () => {
+        console.log('i mounted')
         this.setupSubscription()
         this.setPlayer()
     }
@@ -83,7 +82,7 @@ makePlayerTwo =  () => {
     setupSubscription = () => {
        this.setState({gameChannel: consumer.subscriptions.create({channel: "MultiGamesChannel", id: this.state.streamId }, {
             received(data){
-                console.log(data, 'receiving data')
+               console.log(data, 'receiving data')
                store.dispatch(onReceived(data))
            }
         })
@@ -93,31 +92,35 @@ makePlayerTwo =  () => {
 
     
     componentWillUnmount() {
+        console.log('i unmounted')
+        this.props.toggleMulti()
         const {playerOne, playerTwo } = this.props
-        this.props.clearPlayerOne()
+        if (playerOne)
+        if (playerOne.user_id.toString() === localStorage.id){
+            console.log('pade it p1')
+         fetch(`${API_ROOT}/players/${playerOne.id}`,{
+             method: 'DELETE',
+             headers: HEADERS
+         }).then(this.props.clearPlayerOne())
+         .then(fetch(`${API_ROOT}/multi_games/${this.state.streamId}`, {
+             method: 'DELETE',
+             headers: HEADERS
+         } ) ) }
+        
         this.props.clearPlayerTwo()
-    
-            this.state.gameChannel.unsubscribe()
+        this.state.gameChannel.unsubscribe()
 }
 
     addMultiPoints = (points) => {
-        fetch(`${API_ROOT}/multi_scores`, {
-          method: 'POST',
-          headers: HEADERS,
-          body: JSON.stringify({multi_game_id: this.state.streamId,                
-                    points: points,
-                    player_id: this.props.playerOne.user_id.toString() === localStorage.id ? this.props.playerOne.id : this.props.playerTwo.id,
-                    player_name: this.props.playerOne.user_id.toString() === localStorage.id ? this.props.playerOne.name : this.props.playerTwo.name
-          }) })
-      };
+        this.state.gameChannel.send({multi_score: {name: this.props.player, points: points}})
+    }
+
 
    leaveRoom = () => {
        const {playerOne, playerTwo } = this.props
-     
        if (playerOne)
        if (playerOne.user_id.toString() === localStorage.id){
            console.log('pade it p1')
-           
         fetch(`${API_ROOT}/players/${playerOne.id}`,{
             method: 'DELETE',
             headers: HEADERS
@@ -138,21 +141,25 @@ makePlayerTwo =  () => {
    }
 
    curWord = (word) => {
-    //    debugger 
-     this.state.gameChannel.send({curWord: word })
+     if (this.props.playerOne.user_id.toString() === localStorage.id) {
+        this.state.gameChannel.send({curWord: word })  
+     }
+   }
+
+   multiTimer = (time) => {
+    if (this.props.playerOne.user_id.toString() === localStorage.id) {
+        this.state.gameChannel.send({time: time })  
+     }
    }
 
     render(){
         const {playerOne, playerTwo} = this.props
-       
         return(
             <div>
 
-                {this.state.full === true ? 
+                {this.props.multiGame === true ? 
                 <div> 
-                <GameContainer curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
-                <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
-                <h1 className='opponent-score-2'>P2: {this.props.playerTwoScore}</h1>
+                <GameContainer multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
                 </div>
                 :
                 <div> 

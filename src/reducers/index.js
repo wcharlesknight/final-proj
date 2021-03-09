@@ -10,11 +10,12 @@ const initialState = {
   score: 0,
   round: 0,
   timer: 7, 
+  player: '',
   gameOver: false,
   highScores: [], 
   leaders: [],
-  curMultiWord: '',
-  multiGame: '',
+  curMultiWord: [],
+  multiGame: false,
   playerOne: '',
   playerTwo: '',
   playerTwoScore: 0,
@@ -84,7 +85,7 @@ function rootReducer(state = initialState, action) {
     else if (action.type === 'cur_word') {
       return {
         ...state,
-      curMultiWord: state.curMultiWord.concat(action.payload)
+      curMultiWord: action.payload.curWord
           } }
     else if (action.type === 'add_player_two') {
         return {
@@ -96,10 +97,20 @@ function rootReducer(state = initialState, action) {
       ...state,
       playerOneScore: state.playerOneScore + action.payload.multi_score.points
   } }
-  else if (action.type === 'player_one') {
+  else if (action.type === 'set_player_one') {
     return {
     ...state,
-    playerOne: action.payload
+    playerOne: action.payload.player
+} }
+else if (action.type === 'set_internal') {
+  return {
+  ...state,
+  player: action.payload
+} }
+else if (action.type === 'player_one') {
+  return {
+  ...state,
+  playerOne: action.payload
 } }
   else if (action.type === 'set_player_two') {
     return {
@@ -120,6 +131,16 @@ else if (action.type === 'clear_player_two') {
   return {
   ...state,
  playerTwo: ''
+} }
+else if (action.type === 'multi_timer') {
+  return {
+  ...state,
+ timer: state.timer + action.payload.time 
+} }
+else if (action.type === 'toggle_multi') {
+  return {
+  ...state,
+ multiGame: !state.multiGame
 } }
   return state;
 }

@@ -51,7 +51,7 @@ class PreConnectLogin extends Component {
         error: null,
       });
       localStorage.setItem("token", token);
-      localStorage.setItem("id", this.state.user.id)
+      localStorage.setItem('id', this.state.user.id)
       this.props.addUser({ username,  password, id})
       this.props.history.push("/welcome")
     } else if (data.error) {
