@@ -136,11 +136,11 @@ login = () => {
 render() {
   const { username, password, error,user,  login} = this.state;
   return (
-   <Container> 
+   <Container className='app-font' > 
     {!!error && <h1>{error}</h1>}
     <form onSubmit={this.handleSubmit}>
       <div>
-        <label htmlFor="username">Username</label>
+        <label  className='m-2' htmlFor="username  m-2">Username</label>  
         <input
           type="text"
           id="username"
@@ -150,7 +150,7 @@ render() {
         />
       </div>
       <div>
-        <label htmlFor="password">Password</label>
+        <label className='m-2' htmlFor="password">Password</label> 
         <input
           type="text"
           id="password"
@@ -167,8 +167,8 @@ render() {
     {
      login ?
      <div>
-        <Button onClick={this.handleLogout}>Logout</Button> 
-        <Button onClick={() => this.props.history.push('/welcome')}>To Homepage</Button> 
+        <Button className='button' onClick={this.handleLogout}>Logout</Button> 
+        <Button className='button' onClick={() => this.props.history.push('/welcome')}>To Homepage</Button> 
      </div>
     : null
     }

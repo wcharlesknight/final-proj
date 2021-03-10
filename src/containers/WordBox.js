@@ -6,8 +6,6 @@ function mapStateToProps(state) {
     return  state
 }
 
-
-
 class Word extends Component {
     
     state = {

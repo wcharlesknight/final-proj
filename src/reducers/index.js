@@ -87,6 +87,17 @@ function rootReducer(state = initialState, action) {
         ...state,
       curMultiWord: action.payload.curWord
           } }
+          else if (action.type === 'game_initialize') {
+            return {
+              ...state,
+            curMultiWord: [],
+            score: 0, 
+            round: 0,
+            timer: 7, 
+            points: [],
+            playerOneScore:  0, 
+            playerTwoScore: 0
+                } }
     else if (action.type === 'add_player_two') {
         return {
         ...state,
@@ -140,7 +151,12 @@ else if (action.type === 'multi_timer') {
 else if (action.type === 'toggle_multi') {
   return {
   ...state,
- multiGame: !state.multiGame
+ multiGame: action.payload
+} }
+else if (action.type === 't_multi') {
+  return {
+  ...state,
+ multiGame: action.payload.toggleMulti
 } }
   return state;
 }

@@ -81,6 +81,10 @@ export function setInternal(payload){
   return ({type: 'set_internal', payload})
 }
 
+export function gameInitialize(payload){
+  return ({type: 'game_initialize', payload})
+}
+
 export function onReceived(payload){
   if (Object.keys(payload).includes('player')) {
     if (payload.player.name.includes('P1') === true) {
@@ -102,8 +106,11 @@ export function onReceived(payload){
   else if (Object.keys(payload).includes('curWord')) {
     return {type: 'cur_word', payload}
         }
+  else if (Object.keys(payload).includes('toggle_game')) {
+        return {type: 'toggle_game', payload}
+      }
   else if (Object.keys(payload).includes('toggleMulti')){
-    return {type: 'toggle_multi', payload}
+    return {type: 't_multi', payload}
   }
   else if (Object.keys(payload).includes('time')) {
       return {type: 'multi_timer', payload }

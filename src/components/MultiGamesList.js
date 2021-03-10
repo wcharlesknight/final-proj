@@ -1,8 +1,9 @@
 import React, {Fragment} from 'react';
+import {Container,  Button} from 'react-bootstrap'
 import { API_ROOT } from '../constants';
 import NewMultiGameForm from './NewMultiGameForm';
 import MultiScoresArea from './MultiScoresArea';
-import {withRouter} from 'react-router-dom'
+import {withRouter, Link} from 'react-router-dom'
 import MultiplayerRoom from './MultiplayerRoom';
 import { connect } from "react-redux";
 import {changeChannel, currentMulti} from '../actions/index';
@@ -24,7 +25,8 @@ class PreMultiGamesList extends React.Component {
    
     fetch(`${API_ROOT}/multi_games`)
       .then(res => res.json())
-      .then(multiGames => this.setState({ multiGames }));
+      .then(multiGames => this.setState({ multiGames }))
+      
   };
 
   handleClick = multi => {
@@ -56,9 +58,11 @@ class PreMultiGamesList extends React.Component {
   render = () => {
     const { multiGames, activeMultiGame } = this.state;
     return (
+      <Container className='app-font'> 
       <div className="multiGamesList">
         <h2>Multiplayer Games</h2>
         <ul>{mapMultiGames(multiGames, this.handleClick)}</ul>
+        No Rooms? Create your own.
         <NewMultiGameForm />
         {activeMultiGame ? (
           <MultiScoresArea
@@ -69,6 +73,8 @@ class PreMultiGamesList extends React.Component {
           />
         ) : null}
       </div>
+      <Button className='button'  onClick={() => this.props.history.push('/welcome')}>Main Page</Button>
+      </Container>
     );
   };
 }
@@ -89,7 +95,7 @@ const mapMultiGames = (multiGames, handleClick) => {
   return multiGames.map(multiGame => {
     return (
       <li key={multiGame.id} onClick={() => handleClick(multiGame)}>
-        {multiGame.result} | {multiGame.id}
+        <Link className='app-font'>  Room: {multiGame.id} </Link>
       </li>
     );
   });

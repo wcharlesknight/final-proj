@@ -2,12 +2,18 @@
   height: 100vh;
 }
 
+.back-image{
+  background-image: url('./backimage.png');
+  background-size: 20%;
+}
+
 .App {
   text-align: center;
 }
 
 .app-font{
   font-family: 'Fredoka One', cursive;
+  color: black;
 }
 
 .App-logo {
@@ -21,10 +27,26 @@
   }
 }
 
+.green{
+  background-color: green !important;
+  border-color: green !important;
+}
+
+.red{
+  background-color: red !important;
+  border-color: red !important;
+}
+
 .opponent-score{
   position: absolute;
   top:  10px;
 }
+
+.multiplier{
+  position: fixed;
+  right: 180px;
+}
+
 .opponent-score-2{
   position: absolute;
   top:  55px;
@@ -41,7 +63,10 @@
   color: white;
 }
 
-
+.white-error{
+ color: white !important;
+ left: 700px;
+}
 
 .login {
   display: flex;
@@ -54,7 +79,14 @@
   position: relative;
   justify-content: center;
   align-items: center;
-  height: 35vh;
+  height: 30vh;
+}
+
+.box-fixed-2 {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 45vh;
 }
 
 .game-page {
@@ -66,12 +98,22 @@
 }
 
 .words{
- 
   position: relative;
-  top: 100px;
+  top: 80px;
   font-size: 250%;
   width: 800px;
- 
+  left: 10px
+}
+
+.right{
+  position: absolute;
+  right: 1px;
+}
+
+.bottom-r-1{
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
 }
 
 .used-words{
@@ -82,12 +124,25 @@
 
 .flying-words{
   position: absolute;
-  top: 330px;
+  top: 300px;
+  
 }
+.z-pos{
+  position: relative;
+  z-index: 120;
+  // min-width: 100px;
+}
+
+
 
 .score-top{
   font-size: 250%;
   top: 10px;
+}
+
+.countdown{
+  font-size: 250%;
+  top: 90px;
 }
 
 .input-font{
@@ -112,9 +167,24 @@
 }
 
 .score-box{
-  top: 200px;
-  right: 440px;
-  
+ top: 150px;
+}
+
+.swords-left{
+  position: relative;
+  top: 150px;
+  right: 15px;
+}
+
+.swords-right{
+  position: relative;
+  top: 150px;
+  left: 15px;
+}
+
+.card-h{
+  background-image: url('./backimage.png') !important;
+  background-size: 47%;
 }
 
 .full-height{

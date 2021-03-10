@@ -10,9 +10,20 @@ import { addWord,
         resetWords, 
         changeBonus, 
         resetPoints, 
-        toggleGame} from '../actions/index';
+        toggleGame,
+        gameInitialize } from '../actions/index';
 import Stats from './Stats'
 import {withRouter} from 'react-router-dom'
+import backimage from '../backimage.png'
+import { FaBold } from 'react-icons/fa'
+import {RiFileWordFill} from "react-icons/ri";
+import  {GiPowerLightning} from  "react-icons/gi";
+import {FcFlashAuto} from  "react-icons/fc";
+
+
+var sectionStyle = {
+  backgroundImage: `url(${backimage})`
+}
 
    
 function mapDispatchToProps(dispatch) {
@@ -25,7 +36,8 @@ function mapDispatchToProps(dispatch) {
       resetWords: word => dispatch(resetWords()),
       changeBonus: bonus => dispatch(changeBonus(bonus  )),
       resetPoints:  points => dispatch(resetPoints()),
-      toggleGame: game => dispatch(toggleGame()) 
+      toggleGame: () => dispatch(toggleGame()),
+      gameInitialize: () => dispatch(gameInitialize())
     };
   }
 
@@ -45,6 +57,7 @@ class Game extends Component {
         bonusPoints: 0,
         bonusWord: 1,
         bonusOn: 1,
+        bonusUsed: false
 
     }
 
@@ -77,8 +90,8 @@ class Game extends Component {
     }
 
     componentDidMount(){
-        this.timer()
-        // window.location.reload()
+        // this.timer()
+        this.props.gameInitialize()
         document.addEventListener("keydown", this.useBonus, false);
       }
 
@@ -90,7 +103,7 @@ class Game extends Component {
  
      timer = () => {
         let time = setInterval(() => {
-        if (this.props.round < 10) 
+        if (this.props.round < 11) 
         { 
           if (this.props.timer === 0) {
             this.getWord()
@@ -106,9 +119,8 @@ class Game extends Component {
             {   
                 clearInterval(time)
                 this.errorMessages('Game is over!')
-
                 this.postGame()
-                this.props.toggleGame()
+                this.props.multiGame === true ? this.props.endGame('end') : this.props.toggleGame()
             }
         }, 1000) 
     }
@@ -133,7 +145,6 @@ class Game extends Component {
         .then(data =>  {
             this.props.multiGame === true ? this.props.curWord(data) : this.setState({currentWord: data}) 
       })
-     
     }
 
     errorMessages = (message) => {
@@ -263,23 +274,28 @@ class Game extends Component {
         }  else 
             {
              this.errorMessages('Not a real word')
-             this.setState(prevState => {
-               return {score: prevState.score - 1}})
+            this.addScore([{point: -1}])
             }   
     }
     
     addScore = (points) => {
+        if (this.state.bonusWord * this.state.bonusOn > 1 && points[0].point > 0) {
+            this.setState({bonusUsed: true})
+            this.resetBonus()
+        }    
+        points[0].point > 0 ? this.props.addPoint(points[0].point * this.state.bonusWord * this.state.bonusOn) : this.props.addPoint(points[0].point )
+        if (this.props.multiGame === true) {
         this.props.addMultiPoints(points[0].point * this.state.bonusWord * this.state.bonusOn)
-        this.props.addPoint(points[0].point * this.state.bonusWord * this.state.bonusOn)
-        this.resetBonus()
+         } 
     }
 
     resetBonus = () => {
         setTimeout(() => {
         this.setState({
-            bonusOn: 1
+            bonusOn: 1,
+            bonusUsed: false
         })
-    }, 300)
+    }, 1000)
     }
 
     clear = (e) => {
@@ -291,30 +307,41 @@ class Game extends Component {
     exitGame = () => {
         this.props.history.push('/welcome')
         window.location.reload()
-        
     }
 
     render(){
         return(
             <div>   
              {this.props.gameOver === false ?
-             <Container id='canvas' fluid className='full-height app-font'>
+             <Container  id='canvas' fluid className='full-height app-font'>
                 <Row className='box-fixed text-center'>
                 { this.props.multiGame === true ? 
-                <div>
-                  <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
-                  <h1 className='opponent-score-2'>P2: {this.props.playerTwoScore}</h1> 
+                  <div>     
+                    <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
+                    <h1 className='opponent-score-2'>P2: {this.props.playerTwoScore}</h1> 
                   </div>
-                  :         
+                  :         //SCORE
                  <div className='position-fixed score-top'>Score: {this.props.score}</div> }
-                 <div className='flying-words'> {this.props.points.map(point => <Button className= 'magictime tinUpOut' > {point} </Button> )}</div>
+                {this.props.round === 0 ?
+                <div className='position-fixed countdown'> Game starts in: {this.props.timer} </div>
+                :   <div className='position-fixed countdown invisible'> Game starts in: {this.props.timer} </div> }
+                {/* FLYING POINTS */}
+                 <div className='flying-words'> {this.props.points.map(point => point > 0 ? <Button className= 'm-1 green magictime tinUpOut z-pos border border-white border-5' > + {point} </Button>  : <Button className= 'red magictime tinDownOut z-pos border border-white border-5' > {point} </Button> ) }</div> 
+                 {/* CURRENT WORD BOX   */}
                 { this.props.multiGame === true ? 
                  <div className=' words m-2'> {this.props.curMultiWord.map( (word, index) => <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
                  :
                   <div className=' words m-2'> {this.state.currentWord.map((word, index)=> <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
-                }
+                } 
+                {
+                    // MULTIPLIER AMOUNT
+                    this.state.bonusUsed === true ? 
+                    <h3 className='multiplier magictime tinLeftOut'> NICE! </h3> :
+                <h3 className={this.state.bonusOn * this.state.bonusWord > 1 ? 'multiplier magictime vanishIn': 'multiplier invisible' } > Current Multiplier: {`${this.state.bonusOn * this.state.bonusWord}x`} </h3>
+                      
+            }
                 </Row>
-                <Row className='box-fixed'>
+                <Row className='box-fixed-2 back-image'>
                 <Col className='text-center'>
                         <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
                         <Button className='button' onClick={() => this.exitGame() }>Exit Game</Button>
@@ -324,23 +351,37 @@ class Game extends Component {
                          <input type='text' onChange={(e) => this.clear(e)}></input>
                          <Button  className='button' type="submit"  name="Submit">Check Word</Button>
                      </Form>
-                     <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button>
-                     <div> 
+                     {/* <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button> */}
+                     <div className='white-error position-fixed' > 
                       {this.state.error}
                      </div>
                    </Col>
                    <Col className='text-center'>
+                 
                        <Card className='used-words'>
-                           <Card.Header>Used Words</Card.Header>
+                       <RiFileWordFill/> <Card.Header>Used Words</Card.Header>
+                       <RiFileWordFill className='bottom-r-1' /> 
                            <Card.Body> 
                                 {this.props.gameWord.map(word => <Card.Text className=' m-0'>{word}</Card.Text>)}
                             </Card.Body>
+                        <RiFileWordFill className='right' /> 
+                        <RiFileWordFill/> 
                        </Card>
                     </Col>
                 </Row>
+                <Row className='box-fixed'>
+                    <Card className='text-center'> 
+                        <Card.Header>Power-ups</Card.Header>
+                        
+                        <Card.Body> 
+                        <h5> <FcFlashAuto />   Press '1' to use 2x multiplier (4 bonus points)</h5>
+                        <h5> <GiPowerLightning />   Press '2' to use 3x multiplier (8 bonus points)</h5>
+                        </Card.Body>
+                    </Card>
+                </Row>
             </Container> 
             :  
-            <GameOver gameStart={this.toggleGame}/> }
+            <GameOver winner={this.props.playerOneScore > this.props.playerTwoScore ? 'P1' : 'P2'} gameStart={this.toggleGame}/> }
             </div>
         )
      }

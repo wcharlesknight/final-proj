@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import {onReceived, setPlayerOne, setInternal} from '../actions/index';
 import actioncable from 'actioncable'
 import store from '../store/index'
+import {Button} from 'react-bootstrap'
 
 function mapDispatchToProps(dispatch){
   return {
@@ -31,7 +32,7 @@ class PreNewMultiGameForm extends React.Component {
   };
 
   handleSubmit = e => {
-    e.preventDefault()
+    // e.preventDefault()
     fetch(`${API_ROOT}/one`, {
       method: 'POST',
       headers: HEADERS,
@@ -51,16 +52,7 @@ class PreNewMultiGameForm extends React.Component {
   render = () => {
     return (
       <div className="newMultiGameForm">
-        <form onSubmit={this.handleSubmit}>
-          <label>New Multiplayer Game:</label>
-          <br />
-          <input
-            type="text"
-            value={this.state.result}
-            onChange={this.handleChange}
-          />
-          <input type="submit" />
-        </form>
+      <Button className='button' onClick={(e) => this.handleSubmit(e)}>Create Room</Button>
       </div>
     );
   };

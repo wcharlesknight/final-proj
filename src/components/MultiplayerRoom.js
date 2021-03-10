@@ -69,7 +69,7 @@ makePlayerTwo =  () => {
         multi_game_id: this.state.streamId })}  
     fetch(`http://localhost:3000/players`, configW)
     .then(this.props.setInternal('P2'))
-    .then(this.state.gameChannel.send({toggleMulti: ''}))
+    .then(this.state.gameChannel.send({toggleMulti: true}))
     
 }
 
@@ -89,11 +89,9 @@ makePlayerTwo =  () => {
       })
     }
 
-
-    
     componentWillUnmount() {
         console.log('i unmounted')
-        this.props.toggleMulti()
+        this.props.toggleMulti(false)
         const {playerOne, playerTwo } = this.props
         if (playerOne)
         if (playerOne.user_id.toString() === localStorage.id){
@@ -106,7 +104,7 @@ makePlayerTwo =  () => {
              method: 'DELETE',
              headers: HEADERS
          } ) ) }
-        
+        this.props.clearPlayerOne()
         this.props.clearPlayerTwo()
         this.state.gameChannel.unsubscribe()
 }
@@ -114,7 +112,6 @@ makePlayerTwo =  () => {
     addMultiPoints = (points) => {
         this.state.gameChannel.send({multi_score: {name: this.props.player, points: points}})
     }
-
 
    leaveRoom = () => {
        const {playerOne, playerTwo } = this.props
@@ -152,6 +149,12 @@ makePlayerTwo =  () => {
      }
    }
 
+   endGame = (payload) => {
+    if (this.props.playerOne.user_id.toString() === localStorage.id){
+        this.state.gameChannel.send({toggle_game: payload})
+    }
+   }
+
     render(){
         const {playerOne, playerTwo} = this.props
         return(
@@ -159,22 +162,13 @@ makePlayerTwo =  () => {
 
                 {this.props.multiGame === true ? 
                 <div> 
-                <GameContainer multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
+                <GameContainer endGame={this.endGame} multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
                 </div>
                 :
-                <div> 
-                <form onSubmit={(e) => this.handleSubmit(e)}>
-                    <input type='text'></input>
-                    <input type='submit'></input>
-                </form>
-               
-                     {/* <div> score: { this.props.multiPoints}</div> */}
-                     {/* <div>{playerOne.name == 'P1' ? playerOne.name  : null}</div>
-                     {/* <div></div> */}
-                     {/* <div>{playerTwo.name == 'P2' ? playerTwo.name : null  } </div> */}
-                     {/* <div>{playerTwo.user_id ? playerTwo.user_id : null }</div> */}
-                     <Button onClick={() => this.leaveRoom()}>Leave Room</Button>
-                     </div>
+                <Container className='app-font App'> 
+                     <h3> Once another player joins the room the game will begin! </h3>
+                     <Button className='button' onClick={() => this.leaveRoom()}>Leave Room</Button>
+                </Container>
                 }
                 </div>
         )
