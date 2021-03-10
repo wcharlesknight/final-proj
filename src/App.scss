@@ -21,10 +21,20 @@
   pointer-events: none;
 }
 
+.purple-border{
+  border-color: purple !important;
+  border-style: solid !important;
+  border-bottom-color: purple !important;
+  border-bottom-width: 5px !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
-  }
+  }}
+
+.black-back{
+  background-color: black !important;
 }
 
 .green{
@@ -97,6 +107,10 @@
   height: 200px;
 }
 
+.white-text{
+  color: white !important;
+}
+
 .words{
   position: relative;
   top: 80px;
@@ -167,8 +181,12 @@
 }
 
 .score-box{
- top: 150px;
+ top: 151px;
 }
+
+.main-box{
+  top: 137px;
+ }
 
 .swords-left{
   position: relative;

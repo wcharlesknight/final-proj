@@ -14,8 +14,8 @@ class Main extends Component {
 
     render() {
         return(
-          <div>  
-             <App/> 
+          <div className='black-back purple-border' >  
+             <App /> 
           </div>
       ) }
 

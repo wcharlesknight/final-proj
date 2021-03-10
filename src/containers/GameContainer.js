@@ -19,6 +19,7 @@ import { FaBold } from 'react-icons/fa'
 import {RiFileWordFill} from "react-icons/ri";
 import  {GiPowerLightning} from  "react-icons/gi";
 import {FcFlashAuto} from  "react-icons/fc";
+import {useTransition, animated} from 'react-spring'
 
 
 var sectionStyle = {
@@ -48,6 +49,8 @@ let token = localStorage.token;
 let config = {method: 'GET', headers: {'Content-Type': 'application/json', 
 Authorization: `Bearer ${token}`}  } 
 
+
+
 class Game extends Component {  
 
     state = {
@@ -61,6 +64,7 @@ class Game extends Component {
 
     }
 
+ 
     useBonus = (e) => {
         if (e.keyCode  ===  49 ){
             if (this.state.bonusPoints - 4 >= 0) {
@@ -309,12 +313,14 @@ class Game extends Component {
         window.location.reload()
     }
 
+
+
     render(){
         return(
             <div>   
              {this.props.gameOver === false ?
              <Container  id='canvas' fluid className='full-height app-font'>
-                <Row className='box-fixed text-center'>
+                <Row className='box-fixed text-center black-back border-bottom border-white white-text'>
                 { this.props.multiGame === true ? 
                   <div>     
                     <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
@@ -369,7 +375,7 @@ class Game extends Component {
                        </Card>
                     </Col>
                 </Row>
-                <Row className='box-fixed'>
+                <Row className='box-fixed black-back border-top border-white'>
                     <Card className='text-center'> 
                         <Card.Header>Power-ups</Card.Header>
                         

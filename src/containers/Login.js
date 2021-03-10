@@ -140,7 +140,7 @@ render() {
     {!!error && <h1>{error}</h1>}
     <form onSubmit={this.handleSubmit}>
       <div>
-        <label  className='m-2' htmlFor="username  m-2">Username</label>  
+        <label  className='m-2 white-text' htmlFor="username  m-2">Username</label>  
         <input
           type="text"
           id="username"
@@ -150,7 +150,7 @@ render() {
         />
       </div>
       <div>
-        <label className='m-2' htmlFor="password">Password</label> 
+        <label className='m-2  white-text' htmlFor="password">Password</label> 
         <input
           type="text"
           id="password"

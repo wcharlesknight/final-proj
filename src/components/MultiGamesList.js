@@ -58,8 +58,8 @@ class PreMultiGamesList extends React.Component {
   render = () => {
     const { multiGames, activeMultiGame } = this.state;
     return (
-      <Container className='app-font'> 
-      <div className="multiGamesList">
+      <Container className='app-font white-text'> 
+      <div className="multiGamesList ">
         <h2>Multiplayer Games</h2>
         <ul>{mapMultiGames(multiGames, this.handleClick)}</ul>
         No Rooms? Create your own.
@@ -95,7 +95,7 @@ const mapMultiGames = (multiGames, handleClick) => {
   return multiGames.map(multiGame => {
     return (
       <li key={multiGame.id} onClick={() => handleClick(multiGame)}>
-        <Link className='app-font'>  Room: {multiGame.id} </Link>
+        <Link className='app-font white-text'>  Room: {multiGame.id} </Link>
       </li>
     );
   });

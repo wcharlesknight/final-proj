@@ -71,8 +71,8 @@ class PreWelcome extends Component {
                <Row className='game-page flex'>
                    
                 <GiCrossedSwords className='swords-left' size='32' />
-                <Card className='score-box' border='dark' >
-                  <Card.Header className='card-h text-white' as='h2'>Speed Words</Card.Header>
+                <Card className='main-box' border='dark' >
+                  <Card.Header className='card-h text-white purple-border' as='h2'>Speed Words</Card.Header>
                   <Button className='button' data-micron='bounce' id='/game' onClick={(e) => this.direct(e)}> Play </Button>
                   <Button className='button' data-micron='bounce' id='/multi' onClick={(e) => this.direct(e)}> Multiplayer Game </Button>
                   <Button className='button' data-micron='squeeze' onClick={() => this.showHighScores()}> Your High Scores </Button>
@@ -88,7 +88,7 @@ class PreWelcome extends Component {
                    <Col className={this.state.scoreBox}>
                  
                    <Card className='score-box text-center'>
-                   <Card.Header as="h5">{this.state.leaders ? 'Leaders' : 'Your High Scores'}</Card.Header>
+                   <Card.Header className='purple-border' as="h5">{this.state.leaders ? 'Leaders' : 'Your High Scores'}</Card.Header>
                    {this.state.leaders ? 
                    <Card.Body> 
                         <ol> 

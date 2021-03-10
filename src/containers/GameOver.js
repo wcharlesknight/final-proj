@@ -3,6 +3,7 @@ import React, {Component, useState, Fragment }  from 'react'
 import {Form, Button, Row, Container, Col, Card} from 'react-bootstrap'
 import {toggleGame} from '../actions/index';
 import {withRouter} from 'react-router-dom'
+import {useTransition, animated} from 'react-spring'
 
 
 function mapStateToProps(state) {
@@ -14,7 +15,8 @@ function mapDispatchToProps(dispatch) {
     }}
 
 const GameOv = (props) => {
-       
+   
+
 
     function newGame(){
         window.location.reload()

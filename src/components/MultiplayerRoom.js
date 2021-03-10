@@ -165,7 +165,7 @@ makePlayerTwo =  () => {
                 <GameContainer endGame={this.endGame} multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
                 </div>
                 :
-                <Container className='app-font App'> 
+                <Container className='app-font App white-text'> 
                      <h3> Once another player joins the room the game will begin! </h3>
                      <Button className='button' onClick={() => this.leaveRoom()}>Leave Room</Button>
                 </Container>
