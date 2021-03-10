@@ -111,9 +111,9 @@ class Game extends Component {
         { 
           if (this.props.timer === 0) {
             this.getWord()
-            this.props.nextRound()
+            this.props.multiGame === true ? this.props.multiRound(1) : this.props.nextRound()
             this.props.multiGame === true ? this.props.multiTimer(7) : this.props.changeTimer(7) 
-            this.props.resetWords()
+            this.props.multiGame === true ? this.props.multiReset() : this.props.resetWords()
             this.setBonus()
           }
            else {
@@ -335,9 +335,9 @@ class Game extends Component {
                  <div className='flying-words'> {this.props.points.map(point => point > 0 ? <Button className= 'm-1 green magictime tinUpOut z-pos border border-white border-5' > + {point} </Button>  : <Button className= 'red magictime tinDownOut z-pos border border-white border-5' > {point} </Button> ) }</div> 
                  {/* CURRENT WORD BOX   */}
                 { this.props.multiGame === true ? 
-                 <div className=' words m-2'> {this.props.curMultiWord.map( (word, index) => <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
+                 <div className='words m-2'> {this.props.curMultiWord.map( (word, index) => <a key={index} className='magictime spaceInUp tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
                  :
-                  <div className=' words m-2'> {this.state.currentWord.map((word, index)=> <a key={index} className='tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
+                  <div className='words m-2'> {this.state.currentWord.map((word, index)=> <a key={index} className='magictime spaceInUp tile m-1'> {word.character}<span>{word.point}</span> </a> ) } </div>
                 } 
                 {
                     // MULTIPLIER AMOUNT
@@ -348,11 +348,11 @@ class Game extends Component {
             }
                 </Row>
                 <Row className='box-fixed-2 back-image'>
-                <Col className='text-center'>
+                <Col className='text-center rotate-back'>
                         <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
                         <Button className='button' onClick={() => this.exitGame() }>Exit Game</Button>
                    </Col>
-                    <Col className='text-center '>
+                    <Col className='text-center rotate-back'>
                       <Form  onSubmit={this.checkWord}> 
                          <input type='text' onChange={(e) => this.clear(e)}></input>
                          <Button  className='button' type="submit"  name="Submit">Check Word</Button>
@@ -362,7 +362,7 @@ class Game extends Component {
                       {this.state.error}
                      </div>
                    </Col>
-                   <Col className='text-center'>
+                   <Col className='text-center rotate-back'>
                  
                        <Card className='used-words'>
                        <RiFileWordFill/> <Card.Header>Used Words</Card.Header>

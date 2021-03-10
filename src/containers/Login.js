@@ -150,9 +150,10 @@ render() {
         />
       </div>
       <div>
-        <label className='m-2  white-text' htmlFor="password">Password</label> 
+        <label className='m-2 white-text' htmlFor="password">Password</label> 
         <input
           type="text"
+          className='m-right'
           id="password"
           name='password'
           value={password}
@@ -160,8 +161,8 @@ render() {
         />
       </div> 
     
-        <Button className={this.state.login ? 'invisible' : ''} onClick={() => this.login()} type="submit">Login</Button>
-        <Button className={this.state.login ? 'invisible' : ''}  type="submit">Signup</Button>
+        <Button className={this.state.login ? 'invisible' : 'button'} onClick={() => this.login()} type="submit">Login</Button>
+        <Button className={this.state.login ? 'invisible' : 'button'}  type="submit">Signup</Button>
   
     </form>
     {

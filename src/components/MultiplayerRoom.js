@@ -149,6 +149,18 @@ makePlayerTwo =  () => {
      }
    }
 
+   multiRound = (round) => {
+    if (this.props.playerOne.user_id.toString() === localStorage.id) {
+        this.state.gameChannel.send({round: round })  
+     }
+   }
+
+   multiReset = () => {
+    if (this.props.playerOne.user_id.toString() === localStorage.id) {
+        this.state.gameChannel.send({reset: '' })  
+     }
+   }
+
    endGame = (payload) => {
     if (this.props.playerOne.user_id.toString() === localStorage.id){
         this.state.gameChannel.send({toggle_game: payload})
@@ -162,7 +174,7 @@ makePlayerTwo =  () => {
 
                 {this.props.multiGame === true ? 
                 <div> 
-                <GameContainer endGame={this.endGame} multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
+                <GameContainer multiReset={this.multiReset} multiRound={this.multiRound} endGame={this.endGame} multiTimer={this.multiTimer} curWord={this.curWord} addMultiPoints={this.addMultiPoints}/>
                 </div>
                 :
                 <Container className='app-font App white-text'> 

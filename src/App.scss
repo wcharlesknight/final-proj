@@ -4,7 +4,12 @@
 
 .back-image{
   background-image: url('./backimage.png');
-  background-size: 20%;
+  background-size: 33%;
+  transform: rotate(180deg)
+}
+
+.rotate-back{
+  transform: rotate(180deg);
 }
 
 .App {
@@ -26,6 +31,11 @@
   border-style: solid !important;
   border-bottom-color: purple !important;
   border-bottom-width: 5px !important;
+}
+
+.m-right{
+  position: relative;
+  left: 4px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -75,7 +85,7 @@
 
 .white-error{
  color: white !important;
- left: 700px;
+ left: 170px;
 }
 
 .login {
@@ -96,7 +106,7 @@
   position: relative;
   justify-content: center;
   align-items: center;
-  height: 45vh;
+  height: 50vh;
 }
 
 .game-page {

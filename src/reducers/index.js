@@ -148,6 +148,11 @@ else if (action.type === 'multi_timer') {
   ...state,
  timer: state.timer + action.payload.time 
 } }
+else if (action.type === 'multi_round') {
+  return {
+  ...state,
+ round: state.round + action.payload.round
+} }
 else if (action.type === 'toggle_multi') {
   return {
   ...state,

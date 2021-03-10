@@ -115,5 +115,11 @@ export function onReceived(payload){
   else if (Object.keys(payload).includes('time')) {
       return {type: 'multi_timer', payload }
       }
+      else if (Object.keys(payload).includes('round')) {
+        return {type: 'multi_round', payload }
+        }
+        else if (Object.keys(payload).includes('reset')) {
+          return {type: 'reset_words', payload }
+          }
    }
   
