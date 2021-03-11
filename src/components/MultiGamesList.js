@@ -22,7 +22,7 @@ class PreMultiGamesList extends React.Component {
   };
 
   componentDidMount = () => {
-   
+    // window.location.reload()
     fetch(`${API_ROOT}/multi_games`)
       .then(res => res.json())
       .then(multiGames => this.setState({ multiGames }))

@@ -3,9 +3,17 @@
 }
 
 .back-image{
+  // background-image: url('./backimage.png');
+  // background-size: 33%;
+  // transform: rotate(180deg);
+  background-color:  white !important;
+}
+
+.back-image-real{
   background-image: url('./backimage.png');
   background-size: 33%;
-  transform: rotate(180deg)
+  // transform: rotate(180deg);
+  // background-color:  white !important;
 }
 
 .rotate-back{
@@ -14,6 +22,18 @@
 
 .App {
   text-align: center;
+}
+
+.lit-word-left{
+  position: absolute;
+  left: 1px;
+  top: 1px;
+}
+
+.lit-word-left-s{
+  position: absolute;
+  left: 1px;
+  top: 1px
 }
 
 .app-font{
@@ -31,6 +51,13 @@
   border-style: solid !important;
   border-bottom-color: purple !important;
   border-bottom-width: 5px !important;
+}
+
+.purple-border-top{
+  border-color: purple !important;
+  border-style: solid !important;
+  border-top-color: purple !important;
+  border-top-width: 5px !important;
 }
 
 .m-right{
@@ -84,8 +111,10 @@
 }
 
 .white-error{
- color: white !important;
- left: 170px;
+//   position: absolute;
+  top: 10px;
+// //  color: white !important;
+//  left: 550px;
 }
 
 .login {
@@ -107,6 +136,13 @@
   justify-content: center;
   align-items: center;
   height: 50vh;
+}
+
+.box-fixed-3 {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
 }
 
 .game-page {

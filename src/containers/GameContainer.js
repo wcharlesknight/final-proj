@@ -11,7 +11,8 @@ import { addWord,
         changeBonus, 
         resetPoints, 
         toggleGame,
-        gameInitialize } from '../actions/index';
+        gameInitialize, 
+        setInternal} from '../actions/index';
 import Stats from './Stats'
 import {withRouter} from 'react-router-dom'
 import backimage from '../backimage.png'
@@ -67,18 +68,18 @@ class Game extends Component {
  
     useBonus = (e) => {
         if (e.keyCode  ===  49 ){
-            if (this.state.bonusPoints - 4 >= 0) {
+            if (this.state.bonusPoints - 2 >= 0) {
               this.setState(prevState => {
-                 return {bonusPoints: prevState.bonusPoints - 4,
+                 return {bonusPoints: prevState.bonusPoints - 2,
                           bonusOn: 2}
                 }) }
             else 
                  this.errorMessages('Not enough bonus points')
         }
         if (e.keyCode  ===  50 ){
-            if (this.state.bonusPoints - 8 >= 0) {
+            if (this.state.bonusPoints - 6 >= 0) {
                 this.setState(prevState => {
-                   return {bonusPoints: prevState.bonusPoints - 8,
+                   return {bonusPoints: prevState.bonusPoints - 6,
                             bonusOn: 3}
                   })} 
               else 
@@ -94,20 +95,21 @@ class Game extends Component {
     }
 
     componentDidMount(){
-        // this.timer()
+        this.timerR = setInterval(() => { this.timer()  }, 1000) 
         this.props.gameInitialize()
         document.addEventListener("keydown", this.useBonus, false);
       }
 
       componentWillUnmount(){
+        clearInterval(this.timerR)
         document.removeEventListener("keydown", this.useBonus, false);
+       
       }
 
-    
  
      timer = () => {
-        let time = setInterval(() => {
-        if (this.props.round < 11) 
+        // setInterval(() => {
+        if (this.props.round < 3) 
         { 
           if (this.props.timer === 0) {
             this.getWord()
@@ -121,13 +123,15 @@ class Game extends Component {
             }
         } else
             {   
-                clearInterval(time)
+                clearInterval(this.timerR)
                 this.errorMessages('Game is over!')
                 this.postGame()
                 this.props.multiGame === true ? this.props.endGame('end') : this.props.toggleGame()
             }
-        }, 1000) 
+        // }, 1000) 
     }
+
+  
     
     postGame = () => {
         console.log('i made it')
@@ -320,7 +324,7 @@ class Game extends Component {
             <div>   
              {this.props.gameOver === false ?
              <Container  id='canvas' fluid className='full-height app-font'>
-                <Row className='box-fixed text-center black-back border-bottom border-white white-text'>
+                <Row className='box-fixed text-center black-back purple-border white-text'>
                 { this.props.multiGame === true ? 
                   <div>     
                     <h1 className='opponent-score'>P1: {this.props.playerOneScore}</h1>
@@ -348,40 +352,47 @@ class Game extends Component {
             }
                 </Row>
                 <Row className='box-fixed-2 back-image'>
-                <Col className='text-center rotate-back'>
+                <Col className='text-center '>
                         <Stats bonus={this.state.bonusOn * this.state.bonusWord} bonusPoints={this.state.bonusPoints} />
                         <Button className='button' onClick={() => this.exitGame() }>Exit Game</Button>
                    </Col>
-                    <Col className='text-center rotate-back'>
+                    <Col className='text-center '>
                       <Form  onSubmit={this.checkWord}> 
                          <input type='text' onChange={(e) => this.clear(e)}></input>
                          <Button  className='button' type="submit"  name="Submit">Check Word</Button>
                      </Form>
                      {/* <Button className='button' data-micron='groove' onClick={() => this.getWord()}> Try </Button> */}
-                     <div className='white-error position-fixed' > 
-                      {this.state.error}
+                     
+                     {this.state.error === '' ? 
+                     <div className='white-error invisible' > 
+                      {this.state.error} hi
                      </div>
+                     :<div className='white-error' > 
+                     {this.state.error}
+                    </div>
+                    }
                    </Col>
-                   <Col className='text-center rotate-back'>
+                   <Col className='text-center '>
                  
-                       <Card className='used-words'>
-                       <RiFileWordFill/> <Card.Header>Used Words</Card.Header>
+                       <Card className='used-words '>
+                       <Card.Header className='back-image-real white-text purple-border' >
+                       <RiFileWordFill  className='lit-word-left' size='17'/> Used Words</Card.Header>
                        <RiFileWordFill className='bottom-r-1' /> 
                            <Card.Body> 
                                 {this.props.gameWord.map(word => <Card.Text className=' m-0'>{word}</Card.Text>)}
                             </Card.Body>
-                        <RiFileWordFill className='right' /> 
-                        <RiFileWordFill/> 
+                        <RiFileWordFill className='right white-text ' /> 
+                        <RiFileWordFill /> 
                        </Card>
                     </Col>
                 </Row>
-                <Row className='box-fixed black-back border-top border-white'>
+                <Row className='box-fixed-3 black-back purple-border-top'>
                     <Card className='text-center'> 
-                        <Card.Header>Power-ups</Card.Header>
+                        <Card.Header >Power-ups</Card.Header>
                         
                         <Card.Body> 
-                        <h5> <FcFlashAuto />   Press '1' to use 2x multiplier (4 bonus points)</h5>
-                        <h5> <GiPowerLightning />   Press '2' to use 3x multiplier (8 bonus points)</h5>
+                        <h5> <FcFlashAuto />   Press '1' to use 2x multiplier (2 bonus points)</h5>
+                        <h5> <GiPowerLightning />   Press '2' to use 3x multiplier (6 bonus points)</h5>
                         </Card.Body>
                     </Card>
                 </Row>

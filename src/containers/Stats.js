@@ -10,9 +10,11 @@ function mapStateToProps(state) {
 const CurrentRo = (props) => {
     return (
     <Card className="text-center">
-      <RiFileWordFill className='right' /> 
-        <RiFileWordFill/>   
-         <Card.Header as="h5">Round: {props.round} </Card.Header>
+      <RiFileWordFill className='right white-text' /> 
+       
+         <Card.Header className='back-image-real white-text purple-border' as="h5">
+         <RiFileWordFill  className='lit-word-left-s' size='17' />
+           Round: {props.round} </Card.Header>
        <Card.Body>
         <Card.Text>Time: {props.timer} secs</Card.Text>
         {props.round > 10 ? 

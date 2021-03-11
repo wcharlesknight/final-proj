@@ -39,7 +39,6 @@ class PreMultiplayerRoom extends Component{
         points: '',
         gameChannel: ''
        
-       
     }}
 
     setPlayer = () => {
@@ -70,7 +69,6 @@ makePlayerTwo =  () => {
     fetch(`http://localhost:3000/players`, configW)
     .then(this.props.setInternal('P2'))
     .then(this.state.gameChannel.send({toggleMulti: true}))
-    
 }
 
     componentDidMount = () => {
