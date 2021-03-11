@@ -132,6 +132,7 @@
 }
 
 .box-fixed-2 {
+  background-color: gray !important;
   position: relative;
   justify-content: center;
   align-items: center;
@@ -176,7 +177,12 @@
   bottom: 1px;
 }
 
+.round-card{
+  box-shadow: 0px 0px 5px 0 black, 0 2px 10px 0 black;
+}
+
 .used-words{
+  box-shadow: 0px 0px 5px 0 black, 0 2px 10px 0 black;
   flex-wrap: wrap;
   font-size: 120%;
   height: 300px;
@@ -232,6 +238,7 @@
 
 .main-box{
   top: 137px;
+  box-shadow: 0px 0px 5px 0 black, 0 2px 10px 0 black;
  }
 
 .swords-left{

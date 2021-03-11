@@ -95,7 +95,7 @@ class Game extends Component {
     }
 
     componentDidMount(){
-        this.timerR = setInterval(() => { this.timer()  }, 1000) 
+        // this.timerR = setInterval(() => { this.timer()  }, 1000) 
         this.props.gameInitialize()
         document.addEventListener("keydown", this.useBonus, false);
       }

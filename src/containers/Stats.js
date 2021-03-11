@@ -9,7 +9,7 @@ function mapStateToProps(state) {
 
 const CurrentRo = (props) => {
     return (
-    <Card className="text-center">
+    <Card className="text-center round-card">
       <RiFileWordFill className='right white-text' /> 
        
          <Card.Header className='back-image-real white-text purple-border' as="h5">
