@@ -1,70 +1,17 @@
-# Getting Started with Create React App
+GAME RULES
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Sinlge player and multiplayer are the same game except multiplayer you are declared a winner. Rules are simple, given a batch of 8 letters, with each letter having a corresponding point amount, make as many words as possible in 7 seconds.
 
-## Available Scripts
+If you get THREE words in a batch, you are granted bonus points and that word is worth 2x. If you get to six words you get 2 bonus points and the word is worth 3x. On the rare event that you get 9 words, the 9th word and any word proceeding it is worth 4x and you  get 3 bonus points. 
 
-In the project directory, you can run:
+If you try a word that is not an actual word you will be docked 1 point. This is to deter people from randomly trying a bunch of words. 
 
-### `npm start`
+Press '1' to use 2x -
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  Using 2 bonus points will grant you a 2x multiplier for the next word, it does not expire. It costs 2 bonus points. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+press '2' to use 3x - 
 
-### `npm test`
+  Using 3 bonus points will grant you a 3x multiplier for the next word, it does not expire. It cost 6 bonus points.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+You play 10 rounds. Good luck!

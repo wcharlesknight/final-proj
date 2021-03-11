@@ -10,12 +10,12 @@ function mapStateToProps(state) {
 const CurrentRo = (props) => {
     return (
     <Card className="text-center round-card">
-      <RiFileWordFill className='right white-text' /> 
+      {/* <RiFileWordFill className='right white-text' />  */}
        
          <Card.Header className='back-image-real white-text purple-border' as="h5">
-         <RiFileWordFill  className='lit-word-left-s' size='17' />
+         {/* <RiFileWordFill  className='lit-word-left-s' size='17' /> */}
            Round: {props.round} </Card.Header>
-       <Card.Body>
+       <Card.Body className='card-back'>
         <Card.Text>Time: {props.timer} secs</Card.Text>
         {props.round > 10 ? 
         <Card.Text >Game Over</Card.Text>
@@ -25,8 +25,8 @@ const CurrentRo = (props) => {
         <Card.Text>Bonus: {props.bonus} </Card.Text>
         <Card.Text>Bonus Points: {props.bonusPoints} </Card.Text>
       </Card.Body>
-      <RiFileWordFill/> 
-      <RiFileWordFill className='bottom-r-1' /> 
+      {/* <RiFileWordFill/> 
+      <RiFileWordFill className='bottom-r-1' />  */}
     </Card>
     )
 }
